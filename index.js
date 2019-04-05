@@ -28,6 +28,9 @@ var extensions = {
             var r = (ret, v) => ret.concat(Array.isArray(v) && depth > 0 ? v.flat(depth - 1) : v);
             return this.reduce(r, []);
         },
+        last(n = 0) {
+            return this[this.length - (n + 1)];
+        },
         unpack() {
             var l = this.length;
             return l == 1 ? this[0] 
@@ -37,6 +40,12 @@ var extensions = {
         }
     },
     string: {
+        uc() { 
+            return this.toUpperCase(); 
+        },
+        lc() { 
+            return this.toLowerCase(); 
+        },
         sprintf(o) {
             var s = this.toString();
             if (typeof o != 'object') return s;
@@ -48,13 +57,7 @@ var extensions = {
             return this.trim()
                 .replace(/^[ \t]*/gm, '')
                 .replace(/([^\n])\n/g, '$1 ');
-        },
-        uc() { 
-            return this.toUpperCase(); 
-        },
-        lc() { 
-            return this.toLowerCase(); 
-        }
+        }    
     },
     object: {
         keys() {

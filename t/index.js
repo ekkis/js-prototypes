@@ -61,6 +61,20 @@ describe('Prototypes', () => {
                 assert.deepEqual(actual, [1,2,3,4,5])
             })
         })
+        describe('last', () => {
+            it('Empty array', () => {
+                var actual = [].last();
+                assert.equal(actual, undefined);
+            })
+            it('Niladic call', () => {
+                var actual = [1,2,3].last();
+                assert.equal(actual, 3)
+            })
+            it('Position specifier', () => {
+                var actual = [1,2,3].last(1);
+                assert.equal(actual, 2)
+            })
+        })
         describe('upack', () => {
             it('Empty array', () => {
                 var actual = [].unpack()
