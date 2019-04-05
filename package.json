@@ -1,7 +1,7 @@
 {
-  "name": "js-prototypes",
+  "name": "js-prototype-lib",
   "version": "1.0.1",
-  "description": "A collection of prototypes for Javascript",
+  "description": "A library of prototypes for Javascript",
   "main": "index.js",
   "scripts": {
     "test": "mocha t/*.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ekkis/js-prototypes.git"
+    "url": "git+https://github.com/ekkis/js-prototype-lib.git"
   },
   "keywords": [
     "prototype",
@@ -20,9 +20,9 @@
   "author": "ekkis <e@arix.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ekkis/js-prototypes/issues"
+    "url": "https://github.com/ekkis/js-prototype-lib/issues"
   },
-  "homepage": "https://github.com/ekkis/js-prototypes#readme",
+  "homepage": "https://github.com/ekkis/js-prototype-lib#readme",
   "devDependencies": {
     "mocha": "^6.0.2"
   }

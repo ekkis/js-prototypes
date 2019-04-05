@@ -20,16 +20,16 @@ const jsp = require('js-prototype-lib');
 // install classes of extensions
 jsp.install();                      // installs array and string
 jsp.install('object');              // installs object prototypes (see warnings)
-jsp.install(['array', 'string']);   // same as .install()
+jsp.install('array', 'string');     // same as .install()
 
 // and use them
-console.log([1,2,3].last());  // should print 3
+console.log([1,2,3].last());        // should print 3
 
 // if the extensions are no longer needed
 // they can be uninstalled
 
-jsp.uninstall('object');      // just object extensions
-jsp.uninstall();              // or all
+jsp.uninstall('object');            // just object extensions
+jsp.uninstall();                    // or all
 ```
 
 ## Extensions

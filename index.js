@@ -2,12 +2,14 @@ const pkg = require('./package.json');
 const ver = semVerToInt(pkg.version);
 
 module.exports = {
-    install: (ls = ['array', 'string']) => {
+    install: (...ls) => {
+        if (ls.length == 0) ls = ['array', 'string'];
         iterate(ls, (o, k, x) => {
             if (!o.prototype[k]) o.prototype[k] = x[k];
         })
     },
-    uninstall: (ls = ['array', 'string', 'object']) => {
+    uninstall: (...ls) => {
+        if (ls.length == 0) ls = ['array', 'string', 'object'];
         iterate(ls, (o, k) => {
             delete o.prototype[k];
         })
