@@ -73,7 +73,7 @@ var extensions = {
 // support functions
 
 function iterate(ls, cb) {
-    if (typeof type == 'string') type = [type];
+    if (typeof ls == 'string') ls = [ls];
     for (var i = 0; i < ls.length; i++) {
         var o = eval(ls[i].replace(ls[i][0], ls[i][0].toUpperCase()));
         if (o.ekkis >= ver) continue;

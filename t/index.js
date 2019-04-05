@@ -1,7 +1,7 @@
 var assert = require('assert').strict
 const jsp = require('../index')
 
-jsp.install(['string', 'array', 'object'])
+jsp.install('string', 'array', 'object')
 
 describe('Prototypes', () => {
     describe('Arrays', () => {
