@@ -1,6 +1,6 @@
 [![npm version](https://badge.fury.io/js/js-prototypes.svg)](https://badge.fury.io/js/js-prototypes)
 
-# Javascript Prototypes
+# Javascript Prototype Library
 
 This collection of native-type prototype extensions in Javascript helps make expressions 
 more terse and improves legibility.  The argument could be made that its use is unadvisable
@@ -15,7 +15,7 @@ npm install js-prototypes
 ...and to use in your projects, simply import it:
 ```js
 // import the module
-const jsp = require('js-prototypes');
+const jsp = require('js-prototype-lib');
 
 // install classes of extensions
 jsp.install();                      // installs array and string
