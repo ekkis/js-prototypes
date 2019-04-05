@@ -10,7 +10,7 @@ but in NodeJs it is perfectly safe
 ## Install / Import
 The project is published on NPM so install is easy:
 ```
-npm install js-prototypes
+npm install js-prototype-lib
 ```
 ...and to use in your projects, simply import it:
 ```js
