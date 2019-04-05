@@ -1,9 +1,14 @@
+[![npm version](https://badge.fury.io/js/js-prototypes.svg)](https://badge.fury.io/js/js-prototypes)
+
 # Javascript Prototypes
 
-This collection of native-type prototypes in Javascript helps make expression more terse and improves legibility.  The argument could be made that its use is unadvisable within browsers due to the instability of these, but in NodeJs it is perfectly safe
+This collection of native-type prototype extensions in Javascript helps make expressions 
+more terse and improves legibility.  The argument could be made that its use is unadvisable
+within browsers as your mileage may vary due to the instability of these implementations,
+but in NodeJs it is perfectly safe
 
-# Install / Import
-The project is published to NPM so install is easy:
+## Install / Import
+The project is published on NPM so install is easy:
 ```
 npm install js-prototypes
 ```
@@ -12,11 +17,22 @@ npm install js-prototypes
 // import the module
 const jsp = require('js-prototypes');
 
-// and use it
+// install classes of extensions
+jsp.install();                      // installs array and string
+jsp.install('object');              // installs object prototypes (see warnings)
+jsp.install(['array', 'string']);   // same as .install()
+
+// and use them
 console.log([1,2,3].last());  // should print 3
+
+// if the extensions are no longer needed
+// they can be uninstalled
+
+jsp.uninstall('object');      // just object extensions
+jsp.uninstall();              // or all
 ```
 
-# Catalogue
+## Extensions
 
 The following prototype extensions are provided by this package:
 
@@ -66,7 +82,7 @@ The following prototype extensions are provided by this package:
 ## Objects
 
 Object prototypes are problematic for packages that are badly written, and there are many of those, therefore
-be careful when using and test thoroughly
+be careful when using these extensions and be prepared to debug other people's code!  Youve been warned
 
   ### keys
   
@@ -76,14 +92,29 @@ be careful when using and test thoroughly
   
   Returns an object transformed according to the function passed
   
-  ### forEach(fn)
+  ### each(fn)
   
   Iterates through the properties of an object, performing a caller-defined function
   
+# Notes
+
+As this module may be included at multiple levels of a project (a project includes it but a dependency
+of the project also includes it), but at any point only one version of the extension can exist, the 
+module only installs if there isn't a previously installed module with a higher version
+
+The installed version is recorded in the native object itself under the property *ekkis* so:
+```js
+console.log(String.ekkis)
+```
+may show:
+
+> 1
+
+which would correspond to '1.0.0' -- if that version of the package has been installed
 
 # Contribute
 
-If you have an extension you're fond of, post an issue on Github.  We're always happy to add new functionality
+If you have an extension you're fond of, post an issue on Github.  We're happy to add new functionality
 
 # Licence
 

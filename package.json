@@ -1,0 +1,29 @@
+{
+  "name": "js-prototypes",
+  "version": "1.0.0",
+  "description": "A collection of prototypes for Javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha t/*.js",
+    "preversion": "npm run test",
+    "version": "",
+    "postversion": "git push && git push --tags && npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ekkis/js-prototypes.git"
+  },
+  "keywords": [
+    "prototype",
+    "polyfill"
+  ],
+  "author": "ekkis <e@arix.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ekkis/js-prototypes/issues"
+  },
+  "homepage": "https://github.com/ekkis/js-prototypes#readme",
+  "devDependencies": {
+    "mocha": "^6.0.2"
+  }
+}
