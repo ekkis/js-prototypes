@@ -88,6 +88,9 @@ var extensions = {
             var r = (o, k, acc) => { acc.push({[key]: k, [val]: o[k]}); return acc; }
             return this.map(r, []);
         },
+        concat(...ls) {
+            return Object.assign(this, ...ls);
+        },
         isStr() {
             return false;
         },

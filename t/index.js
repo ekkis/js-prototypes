@@ -16,13 +16,8 @@ describe('Package functions', () => {
         })
         it('Supports mixes', () => {
             var actual = jsp.ls('object', 'trim')
-            var expected = [
-                'object:keys', 'object:map', 
-                'object:each', 'object:keyval',
-                'object:isStr', 'object:isArr', 'object:isObj',
-                'trim'
-            ]
-            assert.deepEqual(actual, expected)
+            var expected = Object.keys(jsp.extensions.object)
+            assert.equal(actual.length, expected.length + 1)
         })
     })
     describe('Installer', () => {
@@ -115,6 +110,11 @@ describe('Prototypes', () => {
             it('Array non recursion', () => {
                 var actual = ['  test\t', [' inner ', '\tinner\t']].trim()
                 assert.deepEqual(actual, ['test', [' inner ', '\tinner\t']])
+            })
+            it('Trims empty elements', () => {
+                var actual = ['x','','y'].trim(true)
+                var expected = ['x','y']
+                assert.deepEqual(actual, expected)
             })
         })
         describe('flat', () => {
@@ -317,6 +317,13 @@ describe('Prototypes', () => {
                 ]
                 assert.deepEqual(actual, expected)
             })            
+        })
+        describe('concat', () => {
+            it('Base case', () => {
+                var expected = {a:1, b:2}
+                var actual = {}.concat({a:1}, {b:2})
+                assert.deepEqual(actual, expected)
+            })
         })
         describe('is methods', () => {
             it('isStr', () => {
