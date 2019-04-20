@@ -1,28 +1,15 @@
 const pkg = require('./package.json');
-const ver = semVerToInt(pkg.version);
-
-module.exports = {
-    install: (...ls) => {
-        if (ls.length == 0) ls = ['array', 'string'];
-        iterate(ls, (o, k, x) => {
-            if (!o.prototype[k]) o.prototype[k] = x[k];
-        })
-    },
-    uninstall: (...ls) => {
-        if (ls.length == 0) ls = ['array', 'string', 'object'];
-        iterate(ls, (o, k) => {
-            delete o.prototype[k];
-        })
-    }
-}
+const VER = semVerToInt(pkg.version);
 
 var extensions = {
     array: {
         unique() { 
             return this.filter((e, pos) => this.indexOf(e) == pos);
         },
-        trim() {
-            return this.map(s => typeof s == 'string' ? s.trim() : s);
+        trim(nonempty = false) {
+            var ret = this;
+            if (nonempty) ret = ret.filter(s => !!s);
+            return ret.map(s => typeof s == 'string' ? s.trim() : s);
         },
         flat(depth = 1) {
             var r = (ret, v) => ret.concat(Array.isArray(v) && depth > 0 ? v.flat(depth - 1) : v);
@@ -37,6 +24,19 @@ var extensions = {
                 : l == 0 && arguments.length > 0
                 ? undefined
                 : this;
+        },
+        keyval(key = 'k', val = 'v') {
+            var r = (acc, v) => { acc[v[key]] = v[val]; return acc; };
+            return this.reduce(r, {});
+        },
+        isStr() {
+            return false;
+        },
+        isArr() {
+            return true;
+        },
+        isObj() {
+            return false;
         }
     },
     string: {
@@ -45,6 +45,11 @@ var extensions = {
         },
         lc() { 
             return this.toLowerCase(); 
+        },
+        tc() {
+            return this.toLowerCase().split(/\b/)
+                .map(s => s.length > 1 ? (s.charAt(0).toUpperCase() + s.substr(1)) : s)
+                .join('');
         },
         sprintf(o) {
             var s = this.toString();
@@ -57,7 +62,16 @@ var extensions = {
             return this.trim()
                 .replace(/^[ \t]*/gm, '')
                 .replace(/([^\n])\n/g, '$1 ');
-        }    
+        },
+        isStr() {
+            return true;
+        },
+        isArr() {
+            return false;
+        },
+        isObj() {
+            return false;
+        }
     },
     object: {
         keys() {
@@ -69,22 +83,65 @@ var extensions = {
         },
         each(fn) {
             this.map(fn, this);    
-        }
+        },
+        keyval(key = 'k', val = 'v') {
+            var r = (o, k, acc) => { acc.push({[key]: k, [val]: o[k]}); return acc; }
+            return this.map(r, []);
+        },
+        isStr() {
+            return false;
+        },
+        isArr() {
+            return false;
+        },
+        isObj() {
+            return true;
+        }    
+    }
+}
+
+var self = module.exports = {
+    extensions,
+    force: false,
+    install(...r) {
+        if (r.length == 0) r = ['array', 'string', 'object'];
+        iterate(this.ls(...r), (o, nm, fn) => {
+            const lib = 'js-prototype-lib';
+            if (!o.library) o.library = lib;
+            if (o.library != lib || (o.version || 0) > VER) return;
+    
+            o.version = VER;
+            if (!o.prototype[nm] || self.force) Object.defineProperty(
+                o.prototype, nm, {
+                    configurable: true, enumerable: false,
+                    writable: true, value: fn,
+                }
+            );
+        })
+    },
+    uninstall(...r) {
+        if (r.length == 0) r = ['array', 'string', 'object'];
+        iterate(this.ls(...r), (o, k) => {
+            delete o.prototype[k];
+        })
+    },
+    ls(...ls) {
+        return ls.map(
+            k => (k in extensions)
+            ? Object.keys(extensions[k]).map(s => k + ':' + s)
+            : k
+        )
+        .reduce((ret, v) => ret.concat(v), []);
     }
 }
 
 // support functions
 
 function iterate(ls, cb) {
-    if (typeof ls == 'string') ls = [ls];
     for (var i = 0; i < ls.length; i++) {
-        var o = eval(ls[i].replace(ls[i][0], ls[i][0].toUpperCase()));
-        if (o.ekkis >= ver) continue;
-        o.ekkis = ver;
-        var x = extensions[ls[i]];
-        for (var k in x) {
-            if (x.hasOwnProperty(k)) cb(o, k, x);
-        }
+        var [prot, fn] = ls[i].split(':');
+        var o = eval(prot.replace(prot[0], prot[0].toUpperCase()));
+        cb(o, fn, extensions[prot][fn]);
     }
 }
 

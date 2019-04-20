@@ -5,7 +5,7 @@
 This collection of native-type prototype extensions in Javascript helps make expressions 
 more terse and improves legibility.  The argument could be made that its use is unadvisable
 within browsers as your mileage may vary due to the instability of these implementations,
-but in NodeJs it is perfectly safe
+but in NodeJs it works (and comes with a test suite)
 
 ## Install / Import
 The project is published on NPM so install is easy:
@@ -62,6 +62,12 @@ The following prototype extensions are provided by this package:
    If the array contains a single element, this extension returns it, otherwise it returns
    the array.  If any argument is passed to the method and the array is empty, `undefined`
    is returned
+
+   ### keyval(key = 'k', val = 'v')
+
+   Converts a key/value array into an object where the array elements are expected to have
+   a key and a value with the names passed to this function e.g. `{k: 'a', v: 3}` which 
+   converts to `{a: 3}`
    
 ## Strings
 
@@ -78,11 +84,16 @@ The following prototype extensions are provided by this package:
   ### lc
   
   A shorter name for `.toLowerCase()`
+
+  ### tc
+
+  Title case.  Turns 'iN a liTTle bOOk' into 'In a Little Book'.
   
 ## Objects
 
-Object prototypes are problematic for packages that are badly written, and there are many of those, therefore
-be careful when using these extensions and be prepared to debug other people's code!  Youve been warned
+Object prototypes are typically problematic for packages that are badly written (packages that do 
+`for (var i in o)` without calling `.hasOwnProperty()`), and there are many of those, therefore 
+this module creates the methods as non-enumerable, which will be perfectly safe
 
   ### keys
   
@@ -95,16 +106,44 @@ be careful when using these extensions and be prepared to debug other people's c
   ### each(fn)
   
   Iterates through the properties of an object, performing a caller-defined function
+
+  ### keyval(key = 'k', val = 'v')
+
+  Converts an object into a key/value array where each array entry is an object with two
+  attributes, one called 'k' (or whatever is supplied to the function) containing the key
+  name, and the other 'v' for the value.  Cf. `[].keyval()`
   
+## Common
+
+Each of *Array*, *String* and *Object* provide method to determine type such as `.isObj()`,
+`.isStr()` and `.isArr()` that will indicate when a variable contains a certain type of object.
+This can be used like this:
+```js
+var x = '';
+console.log(x.isStr());             // prints true
+console.log(x.isArr());             // prints false
+console.log(x.isObj());             // prints false
+x = [];
+console.log(x.isStr());             // prints false
+console.log(x.isArr());             // prints true
+console.log(x.isObj());             // prints false
+x = {};
+console.log(x.isStr());             // prints false
+console.log(x.isArr());             // prints false
+console.log(x.isObj());             // prints true
+```
+
 # Notes
 
 As this module may be included at multiple levels of a project (a project includes it but a dependency
-of the project also includes it), but at any point only one version of the extension can exist, the 
-module only installs if there isn't a previously installed module with a higher version
+of the project also includes it), and the versions at each level differ, the codebase makes sure that
+only the latest version available is installed.
 
-The installed version is recorded in the native object itself under the property *ekkis* so:
+To accomplish this the *Array*, *Object* and *String* objects are marked up with the attributes `library`
+and `version` which indicate such that:
+
 ```js
-console.log(String.ekkis)
+console.log(String.version)
 ```
 may show:
 

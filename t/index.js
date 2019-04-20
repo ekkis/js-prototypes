@@ -1,9 +1,84 @@
 var assert = require('assert').strict
 const jsp = require('../index')
 
-jsp.install('string', 'array', 'object')
-
+describe('Package functions', () => {
+    describe('Lister', () => {
+        it('Expands categories', () => {
+            var actual = jsp.ls('array');
+            var expected = Object.keys(jsp.extensions.array)
+                .map(k => 'array:' + k)
+            assert.deepEqual(actual, expected)
+        })
+        it('Individual functions', () => {
+            var expected = ['unique', 'trim', 'flat'];
+            var actual = jsp.ls(expected);
+            assert.deepEqual(actual, expected)
+        })
+        it('Supports mixes', () => {
+            var actual = jsp.ls('object', 'trim')
+            var expected = [
+                'object:keys', 'object:map', 
+                'object:each', 'object:keyval',
+                'object:isStr', 'object:isArr', 'object:isObj',
+                'trim'
+            ]
+            assert.deepEqual(actual, expected)
+        })
+    })
+    describe('Installer', () => {
+        before(() => {
+            if (Array.prototype.last) delete Array.prototype.last
+        })
+        it('Handles a single function', () => {
+            jsp.install('array:last')
+            assert.ok(!!Array.prototype.last)
+        })
+        it('Supports groups', () => {
+            jsp.install('object')
+            var expected = Object.keys(jsp.extensions.object)
+            var actual = expected.filter(k => Object.prototype[k])
+            assert.equal(actual.length, expected.length)
+        })
+        it('Preserves object enumerability', () => {
+            jsp.install('object:keys');
+            var ok = true, o = {};
+            for (var i in o) ok = false;
+            assert.ok(ok, 'Object space polluted')
+        })
+        it('Niladic call', () => {
+            jsp.install()
+            var actual = 0, expected = 0;
+            Object.keys(jsp.extensions).map(x => {
+                var k = Object.keys(jsp.extensions[x]);
+                expected += k.length;
+                actual += k.filter(k => {
+                    var o = eval(x.tc());
+                    return !!o.prototype[k];
+                }).length;
+            });
+            assert.equal(actual, expected)
+        })
+    })
+    describe('Uninstaller', () => {
+        before(() => {
+            jsp.install('array:last')
+        })
+        it('Single function', () => {
+            jsp.uninstall('array:last')
+            assert.ok(!Array.prototype.last, 'Failed uninstallation')
+        })
+        it('Supports groups', () => {
+            jsp.uninstall('object')
+            var keys = Object.keys(jsp.extensions.object)
+            var expected = keys.filter(k => !Object.prototype[k])
+            assert.equal(keys.length, expected.length)
+        })
+    })
+})
 describe('Prototypes', () => {
+    beforeEach(() => {
+        jsp.install()
+    })
     describe('Arrays', () => {
         describe('unique', () => {
             it('Handles empty arrays', () => {
@@ -99,6 +174,39 @@ describe('Prototypes', () => {
                 assert.deepEqual(actual, ['a', 'b', 'c'])
             })
         })
+        describe('keyval', () => {
+            it('Base case', () => {
+                var r = [
+                    {k: 'a', v: 1}, 
+                    {k: 'b', v: 2}, 
+                    {k: 'c', v: 3}
+                ]
+                var expected = {a: 1, b: 2, c: 3}
+                var actual = r.keyval()
+                assert.deepEqual(actual, expected)
+            })
+            it('Named fields', () => {
+                var r = [
+                    {key: 'a', val: 1}, 
+                    {key: 'b', val: 2}, 
+                    {key: 'c', val: 3}
+                ]
+                var expected = {a: 1, b: 2, c: 3}
+                var actual = r.keyval('key', 'val')
+                assert.deepEqual(actual, expected)
+            })
+        })
+        describe('is methods', () => {
+            it('isStr', () => {
+                assert.ok(![].isStr())
+            })
+            it('isArr', () => {
+                assert.ok([].isArr())
+            })
+            it('isObj', () => {
+                assert.ok(![].isObj())
+            })
+        })
     })
     describe('Strings', () => {
         describe('sprintf', () => {
@@ -141,8 +249,85 @@ describe('Prototypes', () => {
                 assert.equal(actual, 'line1 \nline2 \nline3')
             })
         })
+        describe('case functions', () => {
+            var s = 'in a littLe bOOk';
+            it ('Uppercases', () => {
+                var actual = s.uc()
+                var expected = s.toUpperCase()
+                assert.equal(actual, expected)
+            })
+            it ('Lowercases', () => {
+                var actual = s.lc()
+                var expected = s.toLowerCase()
+                assert.equal(actual, expected)
+            })
+            it ('Titlecases', () => {
+                var actual = s.tc()
+                var expected = 'In a Little Book'
+                assert.equal(actual, expected)
+            })
+        })
+        describe('is methods', () => {
+            it('isStr', () => {
+                assert.ok(''.isStr())
+            })
+            it('isArr', () => {
+                assert.ok(!''.isArr())
+            })
+            it('isObj', () => {
+                assert.ok(!''.isObj())
+            })
+        })
     })
     describe('Objects', () => {
-
+        describe('keys', () => {
+            it('Base case', () => {
+                var o = {a: 1, b: 2}
+                var actual = o.keys()
+                var expected = Object.keys(o)
+                assert.deepEqual(actual, expected)
+            })            
+        })
+        describe('map', () => {
+            it('Base case', () => {
+                var r = (o, k, acc) => { acc[k + '_'] = o[k] + 1; return acc }
+                var actual = {a: 1, b: 2}.map(r)
+                var expected = {a_: 2, b_: 3}
+                assert.deepEqual(actual, expected)
+            })            
+        })
+        describe('keyval', () => {
+            it('Base case', () => {
+                var o = {a: 1, b: 2, c: 3}
+                var actual = o.keyval()
+                var expected = [
+                    {k: 'a', v: 1}, 
+                    {k: 'b', v: 2}, 
+                    {k: 'c', v: 3}
+                ]
+                assert.deepEqual(actual, expected)
+            })            
+            it('Named fields', () => {
+                var o = {a: 1, b: 2, c: 3}
+                var actual = o.keyval('key', 'val')
+                var expected = [
+                    {key: 'a', val: 1}, 
+                    {key: 'b', val: 2}, 
+                    {key: 'c', val: 3}
+                ]
+                assert.deepEqual(actual, expected)
+            })            
+        })
+        describe('is methods', () => {
+            it('isStr', () => {
+                assert.ok(!{}.isStr())
+            })
+            it('isArr', () => {
+                assert.ok(!{}.isArr())
+            })
+            it('isObj', () => {
+                assert.ok({}.isObj())
+            })
+        })
     })
 })
