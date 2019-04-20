@@ -324,6 +324,40 @@ describe('Prototypes', () => {
                 var actual = {}.concat({a:1}, {b:2})
                 assert.deepEqual(actual, expected)
             })
+            it('Overwrites', () => {
+                var actual = {a:1, b:2}.concat({a:3})
+                var expected = {a:3, b:2}
+                assert.deepEqual(actual, expected)
+            })
+        })
+        describe('mv', () => {
+            it('Renames', () => {
+                var actual = {a: 1, b: 2}.mv({a: 'c', b: 'd'})
+                var expected = {c:1, d:2}
+                assert.deepEqual(actual, expected)
+            })
+            it('Removes', () => {
+                var actual = {a: 1, b: 2, c: 3, d: 4}.mv({a: '', b: undefined, c: null})
+                var expected = {d:4}
+                assert.deepEqual(actual, expected)
+            })
+        })
+        describe('rm', () => {
+            it('Base case', () => {
+                var actual = {a:1, b:2}.rm('a')
+                var expected = {b:2}
+                assert.deepEqual(actual, expected)
+            })
+            it('Multiple arguments', () => {
+                var actual = {a:1, b:2, c:3}.rm('a', 'c')
+                var expected = {b:2}
+                assert.deepEqual(actual, expected)
+            })
+            it('Accepts array', () => {
+                var actual = {a:1, b:2, c:3, d:4}.rm(...['b', 'd'])
+                var expected = {a:1, c:3}
+                assert.deepEqual(actual, expected)
+            })
         })
         describe('is methods', () => {
             it('isStr', () => {

@@ -91,6 +91,19 @@ var extensions = {
         concat(...ls) {
             return Object.assign(this, ...ls);
         },
+        mv(o) {
+            return this.map((self, k, acc) => {
+                if (k in o) {
+                    if (o[k]) acc[o[k]] = self[k];
+                }
+                else acc[k] = self[k];
+            })
+        },
+        rm(...ls) {
+            var ret = {}.concat(this);
+            ls.forEach(k => delete ret[k]);
+            return ret;
+        },
         isStr() {
             return false;
         },
