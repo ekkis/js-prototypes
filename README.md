@@ -36,6 +36,41 @@ jsp.uninstall();                    // or all
 
 The following prototype extensions are provided by this package:
 
+## Strings
+
+  ### sprintf
+  
+  Very similar to the orignal C function but accepts an object with values to use as replacement
+  and references are made with the `%{elem}` syntax
+  e.g. `"Call my %{relative}".sprintf({relative: 'mother'})`
+  
+  ### uc / lc / tc
+
+  Upper-case, lower-case and title-cases for strings.  Title case turns 'iN a liTTle bOOk' 
+  into 'In a Little Book'
+
+  ### q quote-set = "'"
+
+  Quotes the string with the given character or character set.  If quote set
+  is left unspecified, defaults to ticks.  The method will not double quote so
+  passing `"'test'".q()` returns `'test'`, not `''test''`
+  
+  For characters sets the first character serves as opening and the second as
+  closing e.g. `"test".q("{}")` results in `"{test}"`.  The function doesn't 
+  close match so passing `"test".q("{")` results in `"{test{"`
+
+  Additionally, the method respects embedded quotes and spacing so `"  Ender's game\t".q()`
+  yields `"'  Ender's game\t'"` and `" 'test' "` produces `"' 'test' '"`
+
+  ### keyval key-separator = "=", record-separator = "\n", quote-all = false
+
+  Returns an object from a string containing key/value pairs where keys and records
+  are separated by the given parameters
+
+  The object produced will contain numbers where these are found in the source but
+  if everything should be turned into a string the final parameter may be indicated
+  as true
+
 ## Arrays
 
    ### unique
@@ -51,7 +86,7 @@ The following prototype extensions are provided by this package:
    Flattens nested arrays.  This method behaves identically to the implementation available 
    in NodeJs 11.0.0 and serves as a polyfill for older versions
    
-   ### last(n)
+   ### last n = 0
    
    Returns the last element in the array, if called without arguments.  If passed an
    integer, the nth element from the tail is returned e.g. `.last(1)` returns the penultimate
@@ -63,32 +98,12 @@ The following prototype extensions are provided by this package:
    the array.  If any argument is passed to the method and the array is empty, `undefined`
    is returned
 
-   ### keyval(key = 'k', val = 'v')
+   ### keyval key = 'k', val = 'v'
 
    Converts a key/value array into an object where the array elements are expected to have
    a key and a value with the names passed to this function e.g. `{k: 'a', v: 3}` which 
    converts to `{a: 3}`
    
-## Strings
-
-  ### sprintf
-  
-  Very similar to the orignal C function but accepts an object with values to use as replacement
-  and references are made with the `%{elem}` syntax
-  e.g. `"Call my %{relative}".sprintf({relative: 'mother'})`
-  
-  ### uc
-
-  A shorter name for `.toUpperCase()`
-  
-  ### lc
-  
-  A shorter name for `.toLowerCase()`
-
-  ### tc
-
-  Title case.  Turns 'iN a liTTle bOOk' into 'In a Little Book'.
-  
 ## Objects
 
 Object prototypes are typically problematic for packages that are badly written (packages that do 
@@ -99,15 +114,47 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   
   Equivalent to `Object.keys()`
   
-  ### map(fn)
+  ### map fn
   
   Returns an object transformed according to the function passed
   
-  ### each(fn)
+  ### each fn 
   
   Iterates through the properties of an object, performing a caller-defined function
 
-  ### keyval(key = 'k', val = 'v')
+  ### mv/p descriptor
+
+  These methods move (rename) keys in the object by providing a descriptor map.  The keys
+  in the map indicate which keys in the object will be affected, and the values of the map,
+  the new key names in the object e.g. to rename 'a' to 'b': `{a:1}.mv({a: 'b'})` (yields
+  `{b:1}`).  Key collisions produce no error but overwrite the original value
+
+  The methods also delete keys in the given object when the value provided in the map is
+  falsy e.g. `{a:1,b:2}.mv(a: undefined)`, `{a:1,b:2}.mv(a: null)` and `{a:1,b:2}.mv(a: '')`
+  all produce `{b:2}`
+
+  Finally, there are two versions of the function: 1) `mv` and 2) `mvp` where the latter
+  preserves the underlying object.  They can be used like this:
+  ```js
+  var o = {a:1, b:2}
+  var p = o.mvp({a: 'c'})
+  console.log(p)  // produces {c:1, b:2}
+  console.log(o)  // but leaves orginal alone: {a:1, b:2}
+  
+  // but mv is destructive
+  o.mv({a: 'c})
+  console.log(o)  // produces {c:1, b:2}
+  ```
+
+  ### rm/p list
+
+  Like mv/p, this method comes in destructive and non-destructive modes.  The method
+  accepts a list or array of keys to remove from the object e.g. `{a:1, b:2, c:3}.rm('a', 'b')`
+  and `var ls = ['a','b']; {a:1, b:2, c:3}.rm(...ls)` both produce `{c:3}`
+
+  Please note that to pass an array, spread notation is needed
+
+  ### keyval key = 'k', val = 'v'
 
   Converts an object into a key/value array where each array entry is an object with two
   attributes, one called 'k' (or whatever is supplied to the function) containing the key

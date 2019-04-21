@@ -63,6 +63,20 @@ var extensions = {
                 .replace(/^[ \t]*/gm, '')
                 .replace(/([^\n])\n/g, '$1 ');
         },
+        keyval(ks = "=", rs = "\n", qa = false) {
+            var ret = {};
+            this.split(rs).forEach(s => {
+                var [k, v] = s.split(ks)
+                ret[k] = v.match(/^\d+(?:\.\d+)?$/) && !qa ? parseFloat(v) : v;
+            });
+            return ret;
+        },
+        q(v = "'") {
+            var [qb, qe] = v.split('');
+            if (!qe) qe = qb;
+            var re = new RegExp("^[X]|[X]$".replace(/X/g, v), "g");
+            return qb + this.replace(re, '') + qe;
+        },
         isStr() {
             return true;
         },
@@ -85,13 +99,23 @@ var extensions = {
             this.map(fn, this);    
         },
         keyval(key = 'k', val = 'v') {
-            var r = (o, k, acc) => { acc.push({[key]: k, [val]: o[k]}); return acc; }
+            var r = (o, k, acc) => {
+                acc.push({[key]: k, [val]: o[k]});
+                return acc;
+            }
             return this.map(r, []);
         },
         concat(...ls) {
             return Object.assign(this, ...ls);
         },
         mv(o) {
+            o.map((self, k, acc) => {
+                if (o[k]) this[o[k]] = this[k];
+                delete this[k];
+            })
+            return this;
+        },
+        mvp(o) {
             return this.map((self, k, acc) => {
                 if (k in o) {
                     if (o[k]) acc[o[k]] = self[k];
@@ -100,6 +124,10 @@ var extensions = {
             })
         },
         rm(...ls) {
+            ls.forEach(k => delete this[k]);
+            return this;
+        },
+        rmp(...ls) {
             var ret = {}.concat(this);
             ls.forEach(k => delete ret[k]);
             return ret;

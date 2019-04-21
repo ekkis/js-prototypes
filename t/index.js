@@ -249,6 +249,62 @@ describe('Prototypes', () => {
                 assert.equal(actual, 'line1 \nline2 \nline3')
             })
         })
+        describe('keyval', () => {
+            it('Base case', () => {
+                var input = 'a=1\nb=2\nc=string'
+                var actual = input.keyval()
+                var expected = {a:1, b:2, c:"string"}
+                assert.deepEqual(actual, expected)
+            })
+            it('Supports key separator', () => {
+                var input = 'a:1\nb:2\nc:string'
+                var actual = input.keyval(':')
+                var expected = {a:1, b:2, c:"string"}
+                assert.deepEqual(actual, expected)
+            })
+            it('Supports line separator', () => {
+                var input = 'a:1;b:2;c:string'
+                var actual = input.keyval(':', ';')
+                var expected = {a:1, b:2, c:"string"}
+                assert.deepEqual(actual, expected)
+            })
+            it('Can quote all fields', () => {
+                var input = 'a=1;b=2;c=string'
+                var actual = input.keyval('=', ';', true)
+                var expected = {a:"1", b:"2", c:"string"}
+                assert.deepEqual(actual, expected)
+            })
+        })
+        describe('quoting', () => {
+            it('Base case', () => {
+                var actual = "test".q()
+                assert.equal(actual, "'test'")
+            })
+            it('Prequoted', () => {
+                var actual = "'test'".q()
+                assert.equal(actual, "'test'")
+            })
+            it('Embedded quotes protected', () => {
+                var actual = "test's failure".q()
+                assert.equal(actual, "'test's failure'")
+            })
+            it('Respects whitespace', () => {
+                var actual = "\ttest's failure  ".q()
+                assert.equal(actual, "'\ttest's failure  '")
+            })
+            it('Double quotes', () => {
+                var actual = 'test'.q('"')
+                assert.equal(actual, '"test"')
+            })
+            it('Supports sets', () => {
+                var actual = 'test'.q('{}')
+                assert.equal(actual, '{test}')
+            })
+            it('Supports square brackets', () => {
+                var actual = 'test'.q('[]')
+                assert.equal(actual, '[test]')
+            })
+        })
         describe('case functions', () => {
             var s = 'in a littLe bOOk';
             it ('Uppercases', () => {
@@ -330,33 +386,63 @@ describe('Prototypes', () => {
                 assert.deepEqual(actual, expected)
             })
         })
-        describe('mv', () => {
+        describe('mv/p', () => {
             it('Renames', () => {
-                var actual = {a: 1, b: 2}.mv({a: 'c', b: 'd'})
+                var input = {a:1, b:2}
+                var opts = {a: 'c', b: 'd'}
                 var expected = {c:1, d:2}
-                assert.deepEqual(actual, expected)
+                assert.deepEqual(input.mv(opts), expected, 'mv failed')
+                assert.deepEqual(input.mvp(opts), expected, 'mvp failed')
+            })
+            it('Collisions overwrite', () => {
+                var input = {a:1, b:2}
+                var opts = {a: 'b'}
+                var expected = {b: 1}
+                assert.deepEqual(input.mv(opts), expected, 'mv failed')
+                assert.deepEqual(input.mvp(opts), expected, 'mvp failed')
             })
             it('Removes', () => {
-                var actual = {a: 1, b: 2, c: 3, d: 4}.mv({a: '', b: undefined, c: null})
+                var input = {a: 1, b: 2, c: 3, d: 4}
+                var opts = {a: '', b: undefined, c: null}
                 var expected = {d:4}
-                assert.deepEqual(actual, expected)
+                assert.deepEqual(input.mv(opts), expected, 'mv failed')
+                assert.deepEqual(input.mvp(opts), expected, 'mvp failed')
+            })
+            it('Returnless', () => {
+                var actual = {a: 1, b: 2}
+                var opts = {a: 'c', b: 'd'}
+                actual.mvp(opts)
+                assert.deepEqual(actual, {a:1, b:2}, 'mvp failed')
+                actual.mv(opts)
+                assert.deepEqual(actual, {c:1, d:2}, 'mv failed')
             })
         })
-        describe('rm', () => {
+        describe('rm/p', () => {
             it('Base case', () => {
-                var actual = {a:1, b:2}.rm('a')
+                var input = {a:1, b:2}
                 var expected = {b:2}
-                assert.deepEqual(actual, expected)
+                assert.deepEqual(input.rm('a'), expected, 'rm failed')
+                assert.deepEqual(input.rmp('a'), expected, 'rmp failed')
             })
             it('Multiple arguments', () => {
-                var actual = {a:1, b:2, c:3}.rm('a', 'c')
+                var input = {a:1, b:2, c:3}
                 var expected = {b:2}
-                assert.deepEqual(actual, expected)
+                assert.deepEqual(input.rm('a', 'c'), expected, 'rm failed')
+                assert.deepEqual(input.rmp('a', 'c'), expected, 'rmp failed')
             })
             it('Accepts array', () => {
-                var actual = {a:1, b:2, c:3, d:4}.rm(...['b', 'd'])
+                var input = {a:1, b:2, c:3, d:4}
+                var opts = ['b', 'd']
                 var expected = {a:1, c:3}
-                assert.deepEqual(actual, expected)
+                assert.deepEqual(input.rm(...opts), expected, 'rm failed')
+                assert.deepEqual(input.rmp(...opts), expected, 'rmp failed')
+            })
+            it('Returnless', () => {
+                var actual = {a:1, b:2}
+                actual.rmp('a')
+                assert.deepEqual(actual, {a:1, b:2}, 'rmp failed')
+                actual.rm('a')
+                assert.deepEqual(actual, {b:2}, 'rmp failed')
             })
         })
         describe('is methods', () => {
