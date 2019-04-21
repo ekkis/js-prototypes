@@ -274,6 +274,18 @@ describe('Prototypes', () => {
                 var expected = {a:"1", b:"2", c:"string"}
                 assert.deepEqual(actual, expected)
             })
+            it('Manages empty fields', () => {
+                var input = 'a=1;b=2;;c=string'
+                var actual = input.keyval('=', ';', true)
+                var expected = {a:"1", b:"2", c:"string"}
+                assert.deepEqual(actual, expected)
+            })
+            it('Produces empty keys', () => {
+                var input = 'a=1;b=;c=string'
+                var actual = input.keyval('=', ';', true)
+                var expected = {a:"1", b:'', c:"string"}
+                assert.deepEqual(actual, expected)
+            })
         })
         describe('quoting', () => {
             it('Base case', () => {

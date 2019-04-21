@@ -29,7 +29,8 @@ var extensions = {
         keyval(ks = "=", rs = "\n", qa = false) {
             var ret = {};
             this.split(rs).forEach(s => {
-                var [k, v] = s.split(ks)
+                if (!s) return;
+                var [k, v] = s.split(ks);
                 ret[k] = v.match(/^\d+(?:\.\d+)?$/) && !qa ? parseFloat(v) : v;
             });
             return ret;
