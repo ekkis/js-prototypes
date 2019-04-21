@@ -41,15 +41,9 @@ var extensions = {
             var re = new RegExp("^[X]|[X]$".replace(/X/g, v), "g");
             return qb + this.replace(re, '') + qe;
         },
-        isStr() {
-            return true;
-        },
-        isArr() {
-            return false;
-        },
-        isObj() {
-            return false;
-        }
+        isStr: true,
+        isArr: false,
+        isObj: false
     },
     array: {
         unique() { 
@@ -78,15 +72,9 @@ var extensions = {
             var r = (acc, v) => { acc[v[key]] = v[val]; return acc; };
             return this.reduce(r, {});
         },
-        isStr() {
-            return false;
-        },
-        isArr() {
-            return true;
-        },
-        isObj() {
-            return false;
-        }
+        isStr: false,
+        isArr: true,
+        isObj: false
     },
     object: {
         keys() {
@@ -100,6 +88,14 @@ var extensions = {
             this.map(fn, this);    
         },
         keyval(key = 'k', val = 'v') {
+            if (key.isObj) {
+                var opts = {ks: '=', rs: '\n'}.concat(key);
+                var r = (o, k, acc) => {
+                    acc.push(k + opts.ks + o[k]);
+                    return acc;
+                }
+                return this.map(r, []).join(opts.rs);
+            }
             var r = (o, k, acc) => {
                 acc.push({[key]: k, [val]: o[k]});
                 return acc;
@@ -133,15 +129,9 @@ var extensions = {
             ls.forEach(k => delete ret[k]);
             return ret;
         },
-        isStr() {
-            return false;
-        },
-        isArr() {
-            return false;
-        },
-        isObj() {
-            return true;
-        }    
+        isStr: false,
+        isArr: false,
+        isObj: true
     }
 }
 

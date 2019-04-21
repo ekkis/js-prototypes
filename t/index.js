@@ -31,7 +31,9 @@ describe('Package functions', () => {
         it('Supports groups', () => {
             jsp.install('object')
             var expected = Object.keys(jsp.extensions.object)
-            var actual = expected.filter(k => Object.prototype[k])
+                .filter(k => typeof jsp.extensions.object[k] == 'function')
+            var actual = expected
+                .filter(k => Object.prototype[k])
             assert.equal(actual.length, expected.length)
         })
         it('Preserves object enumerability', () => {
@@ -44,7 +46,8 @@ describe('Package functions', () => {
             jsp.install()
             var actual = 0, expected = 0;
             Object.keys(jsp.extensions).map(x => {
-                var k = Object.keys(jsp.extensions[x]);
+                var k = Object.keys(jsp.extensions[x])
+                    .filter(k => typeof jsp.extensions.object[x] == 'function');
                 expected += k.length;
                 actual += k.filter(k => {
                     var o = eval(x.tc());
@@ -203,13 +206,13 @@ describe('Prototypes', () => {
         })
         describe('is methods', () => {
             it('isStr', () => {
-                assert.ok(''.isStr())
+                assert.ok(''.isStr)
             })
             it('isArr', () => {
-                assert.ok(!''.isArr())
+                assert.ok(!''.isArr)
             })
             it('isObj', () => {
-                assert.ok(!''.isObj())
+                assert.ok(!''.isObj)
             })
         })
     })
@@ -335,15 +338,15 @@ describe('Prototypes', () => {
                 assert.deepEqual(actual, expected)
             })
         })
-        describe('is methods', () => {
+        describe('is properties', () => {
             it('isStr', () => {
-                assert.ok(![].isStr())
+                assert.ok(![].isStr)
             })
             it('isArr', () => {
-                assert.ok([].isArr())
+                assert.ok([].isArr)
             })
             it('isObj', () => {
-                assert.ok(![].isObj())
+                assert.ok(![].isObj)
             })
         })
     })
@@ -358,7 +361,7 @@ describe('Prototypes', () => {
         })
         describe('map', () => {
             it('Base case', () => {
-                var r = (o, k, acc) => { acc[k + '_'] = o[k] + 1; return acc }
+                var r = (o, k, acc) => { acc[k + '_'] = o[k] + 1 }
                 var actual = {a: 1, b: 2}.map(r)
                 var expected = {a_: 2, b_: 3}
                 assert.deepEqual(actual, expected)
@@ -385,6 +388,18 @@ describe('Prototypes', () => {
                 ]
                 assert.deepEqual(actual, expected)
             })            
+            it('String signature - defaults', () => {
+                var o = {a: 1, b: 2, c: 3}
+                var actual = o.keyval({})
+                var expected = 'a=1\nb=2\nc=3'
+                assert.equal(actual, expected)
+            })
+            it('String signature - specific', () => {
+                var o = {a: 1, b: 2, c: 3}
+                var actual = o.keyval({ks: ':', rs: ';'})
+                var expected = 'a:1;b:2;c:3'
+                assert.equal(actual, expected)
+            })
         })
         describe('concat', () => {
             it('Base case', () => {
@@ -457,15 +472,15 @@ describe('Prototypes', () => {
                 assert.deepEqual(actual, {b:2}, 'rmp failed')
             })
         })
-        describe('is methods', () => {
+        describe('is properties', () => {
             it('isStr', () => {
-                assert.ok(!{}.isStr())
+                assert.ok(!{}.isStr)
             })
             it('isArr', () => {
-                assert.ok(!{}.isArr())
+                assert.ok(!{}.isArr)
             })
             it('isObj', () => {
-                assert.ok({}.isObj())
+                assert.ok({}.isObj)
             })
         })
     })

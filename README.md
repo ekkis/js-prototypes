@@ -155,29 +155,34 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   Please note that to pass an array, spread notation is needed
 
   ### keyval key = 'k', val = 'v'
+  ### keyval {ks = '=', rs = '\n'}
 
   Converts an object into a key/value array where each array entry is an object with two
   attributes, one called 'k' (or whatever is supplied to the function) containing the key
   name, and the other 'v' for the value.  Cf. `[].keyval()`
+
+  The method has a second signature that produces a string instead of an array.  Passing
+  a single object as a parameter, containing the keys `ks` and `rs` for key and record 
+  separators (defaulted as shown) produces a string with the object values
   
 ## Common
 
-Each of *Array*, *String* and *Object* provide method to determine type such as `.isObj()`,
-`.isStr()` and `.isArr()` that will indicate when a variable contains a certain type of object.
-This can be used like this:
+The objects modified, *Array*, *String* and *Object*, have also been marked up with properties
+that facilitate determining their type.  This short-circuits the need to do `typeof x == '...'`
+comparisons.  Below are the properties available:
 ```js
 var x = '';
-console.log(x.isStr());             // prints true
-console.log(x.isArr());             // prints false
-console.log(x.isObj());             // prints false
+console.log(x.isStr);             // prints true
+console.log(x.isArr);             // prints false
+console.log(x.isObj);             // prints false
 x = [];
-console.log(x.isStr());             // prints false
-console.log(x.isArr());             // prints true
-console.log(x.isObj());             // prints false
+console.log(x.isStr);             // prints false
+console.log(x.isArr);             // prints true
+console.log(x.isObj);             // prints false
 x = {};
-console.log(x.isStr());             // prints false
-console.log(x.isArr());             // prints false
-console.log(x.isObj());             // prints true
+console.log(x.isStr);             // prints false
+console.log(x.isArr);             // prints false
+console.log(x.isObj);             // prints true
 ```
 
 # Notes
