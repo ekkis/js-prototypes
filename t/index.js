@@ -411,6 +411,14 @@ describe('Prototypes', () => {
                 assert.deepEqual(actual, expected)
             })            
         })
+        describe('isEmpty', () => {
+            it('Has no attributes', () => {
+                assert.ok({}.isEmpty())
+            })            
+            it('Has attributes', () => {
+                assert.ok(!{a: 1, b: 2}.isEmpty())
+            })            
+        })
         describe('map', () => {
             it('Base case', () => {
                 var r = (o, k, acc) => { acc[k + '_'] = o[k] + 1 }

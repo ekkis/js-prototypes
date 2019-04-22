@@ -85,6 +85,9 @@ var extensions = {
         keys() {
             return Object.keys(this);
         },
+        isEmpty() {
+            return this.keys().length == 0;
+        },
         map(fn, acc = {}) {
             var r = (acc, k) => (fn(this, k, acc), acc);
             return this.keys().reduce(r, acc);

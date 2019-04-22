@@ -170,6 +170,11 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   ### keys
   
   Equivalent to `Object.keys()`
+
+  ### isEmpty
+
+  Returns a boolean value indicating whether the object contains any visible members (this excludes
+  functions and other attributes created with `enumerable: false`)
   
   ### map fn
   
