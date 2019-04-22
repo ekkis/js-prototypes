@@ -167,6 +167,11 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   The method has a second signature that produces a string instead of an array.  Passing
   a single object as a parameter, containing the keys `ks` and `rs` for key and record 
   separators (defaulted as shown) produces a string with the object values
+
+  ### notIn o
+
+  Returns the set of keys in the object that are not found in `o`.  Use it like this:
+  `{a:1, b:1, c:1}.notIn({a:2,b:2}) // returns ['c']`
   
 ## Common
 

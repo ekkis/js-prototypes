@@ -86,7 +86,7 @@ var extensions = {
             return this.keys().reduce(r, acc);
         },
         each(fn) {
-            this.map(fn, this);    
+            this.keys().forEach(k => fn(k, this))  
         },
         keyval(key = 'k', val = 'v') {
             if (key.isObj) {
@@ -129,6 +129,10 @@ var extensions = {
             var ret = {}.concat(this);
             ls.forEach(k => delete ret[k]);
             return ret;
+        },
+        notIn(o) {
+            var ok = o.keys();
+            return this.keys().filter(k => ok.indexOf(k) == -1);
         },
         isStr: false,
         isArr: false,

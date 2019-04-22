@@ -486,6 +486,24 @@ describe('Prototypes', () => {
                 assert.deepEqual(actual, {b:2}, 'rmp failed')
             })
         })
+        describe('notIn', () => {
+            it('Congruent set', () => {
+                var input = {a:1, b:2, c:3}
+                var actual = input.notIn(input)
+                assert.equal(actual.length, 0)
+            })
+            it('Excess attributes', () => {
+                var input = {a:1, b:2, c:3}
+                var actual = input.notIn({a:1, b:2})
+                assert.equal(actual.length, 1)
+                assert.equal(actual[0], 'c')
+            })
+            it('Complement test', () => {
+                var input = {a:1, b:2}
+                var actual = input.notIn({a:1, b:2, c:3})
+                assert.equal(actual.length, 0)
+            })
+        })
         describe('is properties', () => {
             it('isStr', () => {
                 assert.ok(!{}.isStr)
