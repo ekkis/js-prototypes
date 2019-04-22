@@ -144,9 +144,10 @@ var self = module.exports = {
         iterate(this.ls(...r), (o, nm, fn) => {
             const lib = 'js-prototype-lib';
             if (!o.library) o.library = lib;
-            if (o.library != lib || (o.version || 0) > VER) return;
+            if (o.library != lib || (o.ver || 0) > VER) return;
     
-            o.version = VER;
+            o.ver = VER;
+            o.version = pkg.version;
             if (!o.prototype[nm] || self.force) Object.defineProperty(
                 o.prototype, nm, {
                     configurable: true, enumerable: false,
@@ -168,6 +169,9 @@ var self = module.exports = {
             : k
         )
         .reduce((ret, v) => ret.concat(v), []);
+    },
+    version() {
+        return {SemVer: pkg.version, nbr: VER};
     }
 }
 

@@ -195,16 +195,19 @@ of the project also includes it), and the versions at each level differ, the cod
 only the latest version available is installed.
 
 To accomplish this the *Array*, *Object* and *String* objects are marked up with the attributes `library`
-and `version` which indicate such that:
+and `version`, thus to check what version is loaded you can:
 
 ```js
+const jsp = require('js-prototype-lib')
+console.log(jsp.version().SemVer)
+
+// or load some functions and check the objects
+jsp.install('string')
 console.log(String.version)
 ```
-may show:
+both of which could show:
 
-> 1
-
-which would correspond to '1.0.0' -- if that version of the package has been installed
+> 1.0.11
 
 # Contribute
 

@@ -1,7 +1,16 @@
 var assert = require('assert').strict
 const jsp = require('../index')
 
+var v = jsp.version()
+console.log('Version: ' + v.SemVer + ' (' + v.nbr + ')')
+
 describe('Package functions', () => {
+    describe('Metadata', () => {
+        it('Contains version', () => {
+            assert.ok(!!v.SemVer)
+            assert.ok(!!v.nbr)
+        })
+    })
     describe('Lister', () => {
         it('Expands categories', () => {
             var actual = jsp.ls('array');
@@ -360,6 +369,7 @@ describe('Prototypes', () => {
                 var o = {a: 1, b: 2}
                 var actual = o.keys()
                 var expected = Object.keys(o)
+                assert.ok(Array.isArray(expected))
                 assert.deepEqual(actual, expected)
             })            
         })
