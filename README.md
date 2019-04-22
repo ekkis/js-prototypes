@@ -44,6 +44,60 @@ The following prototype extensions are provided by this package:
   and references are made with the `%{elem}` syntax
   e.g. `"Call my %{relative}".sprintf({relative: 'mother'})`
   
+  ### unindent
+
+  Useful for adjusting multi-line strings that, in order to conform to code indention, include
+  indents that don't display well to the user.  Unlike with *bash* heredocs, the determinant
+  factor is the opening tick:
+  ```js
+  // don't do this
+  var o = {
+    s: `first line
+    second line`
+  }
+  // do this instead
+  var o = {
+    s: `
+    first line
+    second line
+    `
+  }
+  ```
+  The function respects embedding (with respect to the leading line) such that:
+  ```js
+  var o = {
+    s: `
+      first line
+         second line
+      third line
+    `
+  }
+  console.log(o.s.unindent());
+  ```
+  displays:
+  > first line
+  >    second line
+  > third line
+
+  ### heredoc
+
+  Adjusts the content of multi-line strings that represent paragraphs necessarily cut
+  into separate lines for the sake of code neatness but that do not display well to 
+  users.  The function requires developers to double their newlines to insert empty lines
+  ```js
+  var s = `
+      This paragraph should be
+      one continuous line but was cut
+      into multiple lines
+      \n
+      This is a second paragraph
+      `;
+  console.log(s.heredoc())
+  ```
+  will display to users:
+  > This paragraph should be one continuous line but was cut into multiple lines
+  > This is a second paragraph
+
   ### uc / lc / tc
 
   Upper-case, lower-case and title-cases for strings.  Title case turns 'iN a liTTle bOOk' 

@@ -105,25 +105,63 @@ describe('Prototypes', () => {
                 assert.equal(actual, 'math: 1 + 1')
             })
         })
-        describe('trimln', () => {
+        describe('unindent', () => {
+            it('Pre-trimmed', () => {
+                var actual = 'x'.unindent()
+                assert.equal(actual, 'x')
+            })
             it('Trims leading spaces', () => {
-                var actual = '   x'.trimln()
+                var actual = '   x'.unindent()
                 assert.equal(actual, 'x')
             })
             it('Trims leading tabs', () => {
-                var actual = '\t\tx'.trimln()
+                var actual = '\t\tx'.unindent()
                 assert.equal(actual, 'x')
             })
             it('Trims mixed whitespace', () => {
-                var actual = ' \tx'.trimln()
+                var actual = ' \tx'.unindent()
                 assert.equal(actual, 'x')
             })
+            it('Trims trailing whitespace', () => {
+                var actual = ' \tx\t\t  '.unindent()
+                assert.equal(actual, 'x')
+            })
+            it('Multi-line - No trailing', () => {
+                var actual = `
+                x
+                y`;
+                assert.equal(actual.unindent(), 'x\ny')
+            })
+            it('Multi-line - Trailing', () => {
+                var actual = `
+                x
+                y
+                `;
+                assert.equal(actual.unindent(), 'x\ny')
+            })
+            it('Multi-line - Respects embedding', () => {
+                var actual = `
+                x
+                \ty
+                  z
+                `;
+                assert.equal(actual.unindent(), 'x\n\ty\n  z')
+            })
+            it('Multi-line - Does not manage outdentions', () => {
+                var actual = `
+                  x
+                y
+                `;
+                assert.equal(actual.unindent(), 'x\n                y')
+            })
+        })
+        describe('heredoc', () => {
             it('Joins multilines', () => {
-                var actual = 'line1\nline2\nline3'.trimln()
+                var actual = 'line1\nline2\nline3'.heredoc()
                 assert.equal(actual, 'line1 line2 line3')
             })
             it('Respects double lines', () => {
-                var actual = 'line1\n\nline2\n\nline3'.trimln()
+                var actual = 'line1\n\nline2\n\nline3'.heredoc()
                 assert.equal(actual, 'line1 \nline2 \nline3')
             })
         })

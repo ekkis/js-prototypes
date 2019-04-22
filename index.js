@@ -21,9 +21,13 @@ var extensions = {
                 s = s.replace(new RegExp('%{' + k + '}', 'g'), o[k]);
             return s;
         },
-        trimln() {
-            return this.trim()
-                .replace(/^[ \t]*/gm, '')
+        unindent() {
+            var level = this.match(/^\n?([ \t]*)/);
+            var re = new RegExp('^' + level[1], 'gm');
+            return this.trim().replace(re, '');
+        },
+        heredoc() {
+            return this.unindent()
                 .replace(/([^\n])\n/g, '$1 ');
         },
         keyval(ks = "=", rs = "\n", qa = false) {
