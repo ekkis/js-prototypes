@@ -185,6 +185,10 @@ describe('Prototypes', () => {
                 var actual = 'test'.q('[]')
                 assert.equal(actual, '[test]')
             })
+            it('Empty quotes', () => {
+                var actual = 'test'.q("")
+                assert.equal(actual, '"test"')
+            })
         })
         describe('case functions', () => {
             var s = 'in a littLe bOOk';

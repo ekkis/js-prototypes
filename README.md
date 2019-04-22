@@ -62,6 +62,9 @@ The following prototype extensions are provided by this package:
   Additionally, the method respects embedded quotes and spacing so `"  Ender's game\t".q()`
   yields `"'  Ender's game\t'"` and `" 'test' "` produces `"' 'test' '"`
 
+  Finally, as a convenience double quotes can be used to quote by passing an empty string
+  e.g. `'test'.q("")` results in `"test"` -- this is equivalent but nicer than: `'test'.q('"')`
+
   ### keyval key-separator = "=", record-separator = "\n", quote-all = false
 
   Returns an object from a string containing key/value pairs where keys and records

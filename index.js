@@ -36,6 +36,7 @@ var extensions = {
             return ret;
         },
         q(v = "'") {
+            if (!v) v = '"';
             var [qb, qe] = v.split('');
             if (!qe) qe = qb;
             var re = new RegExp("^[X]|[X]$".replace(/X/g, v), "g");
