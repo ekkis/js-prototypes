@@ -504,6 +504,43 @@ describe('Prototypes', () => {
                 assert.equal(actual.length, 0)
             })
         })
+        describe('getpath', () => {
+            it('Empty object', () => {
+                var actual = {}.getpath('a/b/c')
+                var expected = undefined
+                assert.equal(actual, expected)
+            })
+            it('Value exists', () => {
+                var actual = {a: {b: {c: 3}}}.getpath('a/b/c')
+                var expected = 3
+                assert.equal(actual, expected)
+            })
+            it('Dot notation', () => {
+                var actual = {a: {b: {c: 3}}}.getpath('a.b.c')
+                var expected = 3
+                assert.equal(actual, expected)
+            })
+        })
+        describe('setpath', () => {
+            it('Base case', () => {
+                var actual = {};
+                actual.setpath('a/b/c', 3)
+                var expected = {a: {b: {c: 3}}}
+                assert.deepEqual(actual, expected)
+            })
+            it('Path exists', () => {
+                var actual = {a: {b: {c: 0}}};
+                actual.setpath('a/b/c', 1)
+                var expected = {a: {b: {c: 1}}}
+                assert.deepEqual(actual, expected)
+            })
+            it('Dot notation', () => {
+                var actual = {};
+                actual.setpath('a.b.c', 3)
+                var expected = {a: {b: {c: 3}}}
+                assert.deepEqual(actual, expected)
+            })
+        })
         describe('is properties', () => {
             it('isStr', () => {
                 assert.ok(!{}.isStr)

@@ -134,10 +134,26 @@ var extensions = {
             var ok = o.keys();
             return this.keys().filter(k => ok.indexOf(k) == -1);
         },
+        getpath(path) {
+            var p = mkpath(this, path);
+            return p.o[p.k]; 
+        },
+        setpath(path, v) {
+            var p = mkpath(this, path);
+            p.o[p.k] = v;
+            return p.o;
+        },
         isStr: false,
         isArr: false,
         isObj: true
     }
+}
+
+function mkpath(o, path) {
+    path = path.replace(/\./g, '/').split('/');
+    var k = path.pop();
+    path.forEach(k => { if (!o[k]) o[k] = {}; o = o[k]; })
+    return {k, o};
 }
 
 var self = module.exports = {

@@ -173,6 +173,26 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   Returns the set of keys in the object that are not found in `o`.  Use it like this:
   `{a:1, b:1, c:1}.notIn({a:2,b:2}) // returns ['c']`
   
+  ### getpath path
+  ### setpath path value
+
+  This function pair gets and sets deeply embedded values in an object.  Both work regardless
+  of whether the path exists, creating it as needed and the path can be expressed in dots or
+  slashes, whichever is more comfortable to the user:
+  ```js
+  var o = {}
+  o.setpath('a/b/c', 1)
+  console.log(o.a.b.c)            // outputs 1
+  // or
+  var o = {a: {b: {c: 2}}}
+  console.log(o.getpath('a/b/c')) // outputs 2
+
+  // paths can also be expressed using dot notation
+  var o = {}
+  o.setpath('a.b.c', 1)
+  console.log(o.getpath('a.b.c')) // outputs 1
+  ```
+
 ## Common
 
 The objects modified, *Array*, *String* and *Object*, have also been marked up with properties
