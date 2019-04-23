@@ -2,6 +2,12 @@ const pkg = require('./package.json');
 const VER = semVerToInt(pkg.version);
 
 var extensions = {
+    number: {
+        isNbr: true,
+        isStr: false,
+        isArr: false,
+        isObj: false
+    },
     string: {
         uc() { 
             return this.toUpperCase(); 
@@ -46,6 +52,7 @@ var extensions = {
             var re = new RegExp("^[X]|[X]$".replace(/X/g, v), "g");
             return qb + this.replace(re, '') + qe;
         },
+        isNbr: false,
         isStr: true,
         isArr: false,
         isObj: false
@@ -77,6 +84,7 @@ var extensions = {
             var r = (acc, v) => { acc[v[key]] = v[val]; return acc; };
             return this.reduce(r, {});
         },
+        isNbr: false,
         isStr: false,
         isArr: true,
         isObj: false
@@ -150,6 +158,7 @@ var extensions = {
             p.o[p.k] = v;
             return p.o;
         },
+        isNbr: false,
         isStr: false,
         isArr: false,
         isObj: true
@@ -167,7 +176,7 @@ var self = module.exports = {
     extensions,
     force: false,
     install(...r) {
-        if (r.length == 0) r = ['array', 'string', 'object'];
+        if (r.length == 0) r = ['array', 'string', 'object', 'number'];
         iterate(this.ls(...r), (o, nm, fn) => {
             const lib = 'js-prototype-lib';
             if (!o.library) o.library = lib;
@@ -184,7 +193,7 @@ var self = module.exports = {
         })
     },
     uninstall(...r) {
-        if (r.length == 0) r = ['array', 'string', 'object'];
+        if (r.length == 0) r = ['array', 'string', 'object', 'number'];
         iterate(this.ls(...r), (o, k) => {
             delete o.prototype[k];
         })
