@@ -173,4 +173,41 @@ describe('Strings', () => {
 			assert.equal(actual, expected)
 		})
 	})
+	describe('list management', () => {
+		it ('nth - empty', () => {
+			var input = ''
+			var actual = input.nth(0)
+			assert.equal(actual, '')
+		})
+		it ('nth - base case', () => {
+			var input = 'ett/två/tre'
+			assert.equal(input.nth(0), 'ett')
+			assert.equal(input.nth(1), 'två')
+			assert.equal(input.nth(2), 'tre')
+		})
+		it ('nth - index exceeds', () => {
+			var input = 'ett/två/tre'
+			assert.equal(input.nth(3), '')
+		})
+		it ('nth - negative index', () => {
+			var input = 'ett/två/tre'
+			assert.equal(input.nth(-1), 'tre')
+			assert.equal(input.nth(-2), 'två')
+		})
+		it ('nth - delimiter defaults', () => {
+			assert.equal('ett|två|tre'.nth(0), 'ett', 'Pipes failed')
+			assert.equal('ett två tre'.nth(0), 'ett', 'Spaces failed')
+			assert.equal('ett,två,tre'.nth(0), 'ett', 'Commas failed')
+			assert.equal('ett;två;tre'.nth(0), 'ett', 'Semicolons failed')
+			assert.equal('ett.två.tre'.nth(0), 'ett', 'Dots failed')
+			assert.equal('ett\ttvå\ttre'.nth(0), 'ett', 'Tabs failed')
+			assert.equal('ett\ntvå\ntre'.nth(0), 'ett', 'Newlines failed')
+		})
+		it ('nth - delimiter options', () => {
+			assert.equal('ett#två#tre'.nth(0, '#'), 'ett')
+		})
+		it ('nth - empty elements', () => {
+			assert.equal('ett//två///tre'.nth(1), 'två')
+		})
+	})
 })

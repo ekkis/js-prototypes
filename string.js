@@ -41,5 +41,10 @@ module.exports = {
         if (!qe) qe = qb;
         var re = new RegExp("^[X]|[X]$".replace(/X/g, v), "g");
         return qb + this.replace(re, '') + qe;
+    },
+    nth(n, dc = '/|,;. \t\n') {
+        var r = this.split(new RegExp('[' + dc + ']+'));
+        if (n < 0) n = r.length + n;
+        return r[n] || '';
     }
 }

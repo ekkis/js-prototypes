@@ -128,6 +128,15 @@ The following prototype extensions are provided by this package:
   if everything should be turned into a string the final parameter may be indicated
   as true
 
+  ### nth n delimiter-character-set = '/|,;. \t\n'
+
+  Returns the nth value in a string separated by any of the characters in the delimiter
+  set e.g. `'eth/eos/btc'.nth(0)` returns 'eth', `'eth eos btc'.nth(1)` returns 'eos', etc.
+
+  The method can also accept negative indexes, which begin at the end of the array e.g.
+  `'eth,eos,btc'.nth(-1)` returns 'btc'.  Though the set of delimiter characters is rather
+  broad, you can also specify your own e.g. `'eth-eos-btc'.nth(0, '-')` returns 'eth'
+
 ## Arrays
 
    ### unique
