@@ -254,22 +254,37 @@ this module creates the methods as non-enumerable, which will be perfectly safe
 
 ## Common
 
-The objects modified, *Array*, *String* and *Object*, have also been marked up with properties
+The objects *Array*, *String* *Object* and *Number* have also been marked up with properties
 that facilitate determining their type.  This short-circuits the need to do `typeof x == '...'`
-comparisons.  Below are the properties available:
+comparisons, which is inconsistent with arrays where the result is 'object'.  Additionally, the
+`.typeof` property is also defined for each object
+
+Below are the properties available:
 ```js
 var x = '';
 console.log(x.isStr);             // prints true
 console.log(x.isArr);             // prints false
 console.log(x.isObj);             // prints false
+console.log(x.isNbr);             // prints false
+console.log(x.typeof);            // prints 'string'
 x = [];
 console.log(x.isStr);             // prints false
 console.log(x.isArr);             // prints true
 console.log(x.isObj);             // prints false
+console.log(x.isNbr);             // prints false
+console.log(x.typeof);            // prints 'array'
 x = {};
 console.log(x.isStr);             // prints false
 console.log(x.isArr);             // prints false
 console.log(x.isObj);             // prints true
+console.log(x.isNbr);             // prints false
+console.log(x.typeof);            // prints 'object'
+x = 0;
+console.log(x.isStr);             // prints false
+console.log(x.isArr);             // prints false
+console.log(x.isObj);             // prints false
+console.log(x.isNbr);             // prints true
+console.log(x.typeof);            // prints 'number'
 ```
 
 # Notes

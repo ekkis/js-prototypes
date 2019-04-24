@@ -1,226 +1,88 @@
 const pkg = require('./package.json');
 const VER = semVerToInt(pkg.version);
 
-var extensions = {
-    number: {
-        isNbr: true,
-        isStr: false,
-        isArr: false,
-        isObj: false
-    },
-    string: {
-        uc() { 
-            return this.toUpperCase(); 
-        },
-        lc() { 
-            return this.toLowerCase(); 
-        },
-        tc() {
-            return this.toLowerCase().split(/\b/)
-                .map(s => s.length > 1 ? (s.charAt(0).toUpperCase() + s.substr(1)) : s)
-                .join('');
-        },
-        sprintf(o) {
-            var s = this.toString();
-            if (typeof o != 'object') return s;
-            for (var k in o)
-                s = s.replace(new RegExp('%{' + k + '}', 'g'), o[k]);
-            return s;
-        },
-        unindent() {
-            var level = this.match(/^\n?([ \t]*)/);
-            var re = new RegExp('^' + level[1], 'gm');
-            return this.trim().replace(re, '');
-        },
-        heredoc() {
-            return this.unindent()
-                .replace(/([^\n])\n/g, '$1 ');
-        },
-        keyval(ks = "=", rs = "\n", qa = false) {
-            var ret = {};
-            this.split(rs).forEach(s => {
-                if (!s) return;
-                var [k, v] = s.split(ks);
-                ret[k] = v.match(/^\d+(?:\.\d+)?$/) && !qa ? parseFloat(v) : v;
-            });
-            return ret;
-        },
-        q(v = "'") {
-            if (!v) v = '"';
-            var [qb, qe] = v.split('');
-            if (!qe) qe = qb;
-            var re = new RegExp("^[X]|[X]$".replace(/X/g, v), "g");
-            return qb + this.replace(re, '') + qe;
-        },
-        isNbr: false,
-        isStr: true,
-        isArr: false,
-        isObj: false
-    },
-    array: {
-        unique() { 
-            return this.filter((e, pos) => this.indexOf(e) == pos);
-        },
-        trim(nonempty = false) {
-            var ret = this;
-            if (nonempty) ret = ret.filter(s => !!s);
-            return ret.map(s => typeof s == 'string' ? s.trim() : s);
-        },
-        flat(depth = 1) {
-            var r = (ret, v) => ret.concat(Array.isArray(v) && depth > 0 ? v.flat(depth - 1) : v);
-            return this.reduce(r, []);
-        },
-        last(n = 0) {
-            return this[this.length - (n + 1)];
-        },
-        unpack() {
-            var l = this.length;
-            return l == 1 ? this[0] 
-                : l == 0 && arguments.length > 0
-                ? undefined
-                : this;
-        },
-        keyval(key = 'k', val = 'v') {
-            var r = (acc, v) => { acc[v[key]] = v[val]; return acc; };
-            return this.reduce(r, {});
-        },
-        isNbr: false,
-        isStr: false,
-        isArr: true,
-        isObj: false
-    },
-    object: {
-        keys() {
-            return Object.keys(this);
-        },
-        isEmpty() {
-            return this.keys().length == 0;
-        },
-        map(fn, acc = {}) {
-            var r = (acc, k) => (fn(this, k, acc), acc);
-            return this.keys().reduce(r, acc);
-        },
-        each(fn) {
-            this.keys().forEach(k => fn(k, this))  
-        },
-        keyval(key = 'k', val = 'v') {
-            if (key.isObj) {
-                var opts = {ks: '=', rs: '\n'}.concat(key);
-                var r = (o, k, acc) => {
-                    acc.push(k + opts.ks + o[k]);
-                    return acc;
-                }
-                return this.map(r, []).join(opts.rs);
-            }
-            var r = (o, k, acc) => {
-                acc.push({[key]: k, [val]: o[k]});
-                return acc;
-            }
-            return this.map(r, []);
-        },
-        concat(...ls) {
-            return Object.assign(this, ...ls);
-        },
-        mv(o) {
-            o.map((self, k, acc) => {
-                if (o[k]) this[o[k]] = this[k];
-                delete this[k];
-            })
-            return this;
-        },
-        mvp(o) {
-            return this.map((self, k, acc) => {
-                if (k in o) {
-                    if (o[k]) acc[o[k]] = self[k];
-                }
-                else acc[k] = self[k];
-            })
-        },
-        rm(...ls) {
-            ls.forEach(k => delete this[k]);
-            return this;
-        },
-        rmp(...ls) {
-            var ret = {}.concat(this);
-            ls.forEach(k => delete ret[k]);
-            return ret;
-        },
-        notIn(o) {
-            var ok = o.keys();
-            return this.keys().filter(k => ok.indexOf(k) == -1);
-        },
-        getpath(path) {
-            var p = mkpath(this, path);
-            return p.o[p.k]; 
-        },
-        setpath(path, v) {
-            var p = mkpath(this, path);
-            p.o[p.k] = v;
-            return p.o;
-        },
-        isNbr: false,
-        isStr: false,
-        isArr: false,
-        isObj: true
-    }
-}
-
-function mkpath(o, path) {
-    path = path.replace(/\./g, '/').split('/');
-    var k = path.pop();
-    path.forEach(k => { if (!o[k]) o[k] = {}; o = o[k]; })
-    return {k, o};
-}
-
 var self = module.exports = {
-    extensions,
+    extensions: {
+        string: require('./string'),
+        array: require('./array'),
+        object: require('./object'),
+    },
     force: false,
+    groups: ['array', 'string', 'object'],
     install(...r) {
-        if (r.length == 0) r = ['array', 'string', 'object', 'number'];
-        iterate(this.ls(...r), (o, nm, fn) => {
+        if (r.length == 0) r = this.groups;
+        iterate(this.ls(...r), (o, fn) => {
             const lib = 'js-prototype-lib';
-            if (!o.library) o.library = lib;
-            if (o.library != lib || (o.ver || 0) > VER) return;
+            if (!o.val.library) o.val.library = lib;
+            if (o.val.library != lib || (o.val.ver || 0) > VER) return;
     
-            o.ver = VER;
-            o.version = pkg.version;
-            if (!o.prototype[nm] || self.force) Object.defineProperty(
-                o.prototype, nm, {
-                    configurable: true, enumerable: false,
-                    writable: true, value: fn,
-                }
+            o.val.ver = VER;
+            o.val.version = pkg.version;
+            this.setIsProperties(o.nm);
+            if (!o.val.prototype[fn.nm] || self.force) mkprop(
+                o.val.prototype, fn.nm, fn.val
             );
         })
     },
     uninstall(...r) {
-        if (r.length == 0) r = ['array', 'string', 'object', 'number'];
-        iterate(this.ls(...r), (o, k) => {
-            delete o.prototype[k];
+        if (r.length == 0) r = this.groups;
+        iterate(this.ls(...r), (o, fn) => {
+            delete o.val.prototype[fn.nm];
         })
     },
     ls(...ls) {
         return ls.map(
-            k => (k in extensions)
-            ? Object.keys(extensions[k]).map(s => k + ':' + s)
+            k => (k in this.extensions)
+            ? Object.keys(this.extensions[k]).map(s => k + ':' + s)
             : k
         )
         .reduce((ret, v) => ret.concat(v), []);
     },
     version() {
         return {SemVer: pkg.version, nbr: VER};
+    },
+    setIsProperties(...ls) {
+        if (ls.length == 0) ls = this.groups.concat('number');
+        var prop = {
+            number: 'isNbr', string: 'isStr', 
+            array: 'isArr', object: 'isObj'
+        }
+        ls.forEach(nm => {
+            if (!prop[nm]) return;
+            var o = getObjByName(nm);
+            if (o.prototype[prop[nm]]) return;
+        
+            mkprop(o.prototype, 'typeof', nm);
+            Object.keys(prop).forEach(k => {
+                mkprop(o.prototype, prop[k], k == nm);
+            })
+        })
     }
 }
 
 // support functions
 
+function tc(s) {
+    return s[0].toUpperCase() + s.substr(1);
+}
+function getObjByName(nm) {
+    return eval(tc(nm));
+}
 function iterate(ls, cb) {
     for (var i = 0; i < ls.length; i++) {
         var [prot, fn] = ls[i].split(':');
-        var o = eval(prot.replace(prot[0], prot[0].toUpperCase()));
-        cb(o, fn, extensions[prot][fn]);
+        cb(
+            {nm: prot, val: getObjByName(prot)}, 
+            {nm: fn, val: self.extensions[prot][fn]}
+        );
     }
 }
-
+function mkprop(o, k, val, opts) {
+    var def = {configurable: true, enumerable: false, writable: true};
+    Object.defineProperty(o, k,
+        Object.assign({value: val}, def, opts)
+    );
+}
 // https://gist.github.com/dislick/914e67444f8f71df3900bd77ccec6091
 function semVerToInt(version) {
     // Split a given version string into three parts.
