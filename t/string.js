@@ -174,6 +174,19 @@ describe('Strings', () => {
 		})
 	})
 	describe('list management', () => {
+		it ('array - base case', () => {
+			var expected = ['ett', 'två', 'tre']
+			assert.deepEqual('ett|två|tre'.arr(), expected, 'Pipes failed')
+			assert.deepEqual('ett,två,tre'.arr(), expected, 'Commas failed')
+			assert.deepEqual('ett;två;tre'.arr(), expected, 'Semicolons failed')
+			assert.deepEqual('ett.två.tre'.arr(), expected, 'Dots failed')
+			assert.deepEqual('ett\ttvå\ttre'.arr(), expected, 'Tabs failed')
+			assert.deepEqual('ett\ntvå\ntre'.arr(), expected, 'Newlines failed')
+		})
+		it ('array - custom delimiter', () => {
+			var expected = ['ett', 'två', 'tre']
+			assert.deepEqual('ett två tre'.arr(' '), expected)
+		})
 		it ('nth - empty', () => {
 			var input = ''
 			var actual = input.nth(0)
@@ -196,7 +209,6 @@ describe('Strings', () => {
 		})
 		it ('nth - delimiter defaults', () => {
 			assert.equal('ett|två|tre'.nth(0), 'ett', 'Pipes failed')
-			assert.equal('ett två tre'.nth(0), 'ett', 'Spaces failed')
 			assert.equal('ett,två,tre'.nth(0), 'ett', 'Commas failed')
 			assert.equal('ett;två;tre'.nth(0), 'ett', 'Semicolons failed')
 			assert.equal('ett.två.tre'.nth(0), 'ett', 'Dots failed')

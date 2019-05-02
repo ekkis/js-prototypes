@@ -128,7 +128,12 @@ The following prototype extensions are provided by this package:
   if everything should be turned into a string the final parameter may be indicated
   as true
 
-  ### nth n delimiter-character-set = '/|,;. \t\n'
+  ### arr delimiter-character-set = '/|,;. \t\n'
+
+  Splits the string by the character set specified (which defaults to the set shown
+  above) and returns the resulting array
+
+  ### nth n delimiter-character-set
 
   Returns the nth value in a string separated by any of the characters in the delimiter
   set e.g. `'eth/eos/btc'.nth(0)` returns 'eth', `'eth eos btc'.nth(1)` returns 'eos', etc.
@@ -192,6 +197,12 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   ### each fn 
   
   Iterates through the properties of an object, performing a caller-defined function
+
+  ### concat o...
+
+  Concatenates the elements of objects passed-in as as parameters with the elements
+  in the object.  Returns the base object.  Use like this: `var o = {a:1}; o.concat({b:1}, {c:1})`
+  or, of course: `var o = {}.concat({a:1})`
 
   ### mv/p descriptor
 

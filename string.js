@@ -42,8 +42,11 @@ module.exports = {
         var re = new RegExp("^[X]|[X]$".replace(/X/g, v), "g");
         return qb + this.replace(re, '') + qe;
     },
-    nth(n, dc = '/|,;. \t\n') {
-        var r = this.split(new RegExp('[' + dc + ']+'));
+    arr(dc = '/|,;.\t\n') {
+        return this.split(new RegExp('[' + dc + ']+'));
+    },
+    nth(n, dc) {
+        var r = this.arr(dc);
         if (n < 0) n = r.length + n;
         return r[n] || '';
     }
