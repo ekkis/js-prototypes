@@ -49,5 +49,25 @@ module.exports = {
         var r = this.arr(dc);
         if (n < 0) n = r.length + n;
         return r[n] || '';
+    },
+    extract(re, original = false) {
+        var m, ret = [];
+        if (isRegExpGlobal(re))
+            while (m = re.exec(this)) ret = ret.concat(m.slice(1));
+        else {
+            m = this.match(re);
+            if (m) ret = m.slice(1);
+        }
+
+        return ret.length == 0 && original
+            ? this.toString() 
+            : ret.length == 1 
+            ? ret[0] 
+            : ret;
     }
+}
+
+function isRegExpGlobal(re) {
+    var mods = re.toString().split('/')[2];
+    return mods.indexOf('g') > -1;
 }

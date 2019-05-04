@@ -142,6 +142,34 @@ The following prototype extensions are provided by this package:
   `'eth,eos,btc'.nth(-1)` returns 'btc'.  Though the set of delimiter characters is rather
   broad, you can also specify your own e.g. `'eth-eos-btc'.nth(0, '-')` returns 'eth'
 
+  ### extract regular-expression original = false
+
+  Used to extract values from a string as specified in the regular expression passed.  
+  
+  Unlike regular matching, this function captures global and recursive capture groups i.e. 
+  either by passing multiple capture sequences in the same expression, or by specifying
+  the /g modifier to the regexp, which is not normally supported by the `.match()` method.
+
+  **return value**
+  Ordinarily the function returns an unpacked array i.e. when the array contains a single
+  element then that element is returned instead.  If the return value is an empty array,
+  the `original` parameter can cause the function to return the original string.
+
+  Below are some examples:
+  ```javascript
+  // no match
+  'now is the time'.extract(/(hello)/)        // returns []
+  'now is the time'.extract(/(hello)/, true)  // returns 'now is the time'
+  
+  // the query below provides multiple capture groups
+  'now is the time for all good men'.extract(/now (\w+) the (\w+) for (\w+)/)
+  // returns ['is', 'time', 'all']
+
+  // the query below provides a recursive capture group
+  'You say "goodbye" and I say "hello"'.extract(/"(\w+)"/g)
+  // returns ['goodbye', 'hello']
+  ```
+
 ## Arrays
 
    ### unique

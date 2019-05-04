@@ -222,4 +222,28 @@ describe('Strings', () => {
 			assert.equal('ett//två///tre'.nth(1), 'två')
 		})
 	})
+	describe('extracts regular expression', () => {
+		var re = /\((.*?)\)/
+		it ('base case', () => {
+			assert.equal('test (case)'.extract(re), 'case')
+		})
+		it ('handles mismatch', () => {
+			var input = 'test [case]'
+			assert.deepEqual(input.extract(re), [])
+		})
+		it ('handles mismatch with original return', () => {
+			var input = 'test [case]'
+			assert.equal(input.extract(re, true), input)
+		})
+		it ('supports multiple fields', () => {
+			var re = /(\w+) first (\w+)/
+			var input = 'test a first case'
+			assert.deepEqual(input.extract(re), ['a', 'case'])
+		})
+		it ('supports global captures', () => {
+			var re = /\{(\w+)\}/g
+			var input = '{a} first {test} case {for} global'
+			assert.deepEqual(input.extract(re), ['a', 'test', 'for'])
+		})
+	})
 })
