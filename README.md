@@ -202,6 +202,10 @@ The following prototype extensions are provided by this package:
    Converts a key/value array into an object where the array elements are expected to have
    a key and a value with the names passed to this function e.g. `{k: 'a', v: 3}` which 
    converts to `{a: 3}`
+
+   ### json
+
+   Converts the array to a Json string
    
 ## Objects
 
@@ -299,6 +303,10 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   o.setpath('a.b.c', 1)
   console.log(o.getpath('a.b.c')) // outputs 1
   ```
+
+  ### json
+
+   Converts the object to a Json string
 
 ## Common
 

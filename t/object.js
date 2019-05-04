@@ -190,4 +190,9 @@ describe('Objects', () => {
 			assert.deepEqual(actual, expected)
 		})
 	})
+	describe('json', () => {
+		it('Base case', () => {
+			assert.deepEqual({a:"x", b:"y"}.json(), '{"a":"x","b":"y"}')
+		})
+	})
 })

@@ -126,4 +126,9 @@ describe('Arrays', () => {
 			assert.deepEqual(actual, expected)
 		})
 	})
+	describe('json', () => {
+		it('Base case', () => {
+			assert.deepEqual(['a', 'b'].json(), '["a","b"]')
+		})
+	})
 })

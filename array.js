@@ -24,6 +24,9 @@ module.exports = {
     keyval(key = 'k', val = 'v') {
         var r = (acc, v) => { acc[v[key]] = v[val]; return acc; };
         return this.reduce(r, {});
+    },
+    json() {
+        return JSON.stringify(this);
     }
 }
 

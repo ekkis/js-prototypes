@@ -66,6 +66,9 @@ module.exports = {
         var p = mkpath(this, path);
         p.o[p.k] = v;
         return p.o;
+    },
+    json() {
+        return JSON.stringify(this);
     }
 }
 
