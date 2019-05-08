@@ -246,4 +246,85 @@ describe('Strings', () => {
 			assert.deepEqual(input.extract(re), ['a', 'test', 'for'])
 		})
 	})
+	describe('json', () => {
+		it('base case', () => {
+			assert.deepEqual('{"a":"x", "b":"y"}'.json(), {a: "x", b: "y"})
+		})
+	})
+	describe('filesystem functions', () => {
+		var f = './string.js'
+		jsp.extensions.string.fs = {
+			existsSync(arg) {
+				return f == arg
+			},
+			fchmod(arg, mode) {
+				assert.ok(arg == f)
+			},
+			chownSync(arg, uid, gid) {
+				assert.ok(arg == f)
+			},
+			statSync(arg, opts) {
+				return {test: 'ok'}
+			},
+			readdirSync(arg, opts) {
+				return opts.withFileTypes
+					? {"name":"LICENSE"}
+					: 'x/y/z'.split('/');
+			},
+			mkdirSync(arg, opts) {
+				assert.ok(arg == f)
+			},
+			readFileSync(arg, opts) {
+				return 'test-string'
+			},
+			copyFileSync(arg, dst, flags) {
+				assert.ok(arg == f && dst == 'x')
+			},
+			renameSync(arg, dst) {
+				assert.ok(arg == f && dst == 'x')
+			},
+			unlinkSync(arg) {
+				assert.ok(arg == f)
+			}
+		}
+		it ('checks for file existence', () => {
+			assert.ok(f.fex())
+		})
+		it ('fails for missing file', () => {
+			assert.ok(!'./_xx_'.fex())
+		})
+		it ('file mode changes', () => {
+			f.fchmod()
+		})
+		it ('file ownership', () => {
+			f.fchown()
+		})
+		it ('file stats', () => {
+			assert.deepEqual(f.fstat(), {test: 'ok'})
+		})
+		it ('directory listing - base case', () => {
+			assert.deepEqual(f.ls(), ['x', 'y', 'z'])
+		})
+		it ('directory listing - regular expression', () => {
+			assert.deepEqual(f.ls(/^x$/), ['x'])
+		})
+		it ('directory listing - entries', () => {
+			assert.deepEqual(f.ls({withFileTypes: true}), {"name":"LICENSE"})
+		})
+		it ('make directory', () => {
+			assert.equal()
+		})
+		it ('file read', () => {
+			assert.equal(f.cat(), 'test-string')
+		})
+		it ('file copy', () => {
+			f.cp('x')
+		})
+		it ('file rename', () => {
+			f.mv('x')
+		})
+		it ('file removal', () => {
+			f.rm()
+		})
+	})
 })

@@ -170,6 +170,33 @@ The following prototype extensions are provided by this package:
   // returns ['goodbye', 'hello']
   ```
 
+  ## json
+
+  Parses the given Json string, returning an object
+
+  ### fex / fchmod / fchown / fstat / ls / mkdir / cat / cp / mv / rm
+
+  This family of functions provides filesystem functionality on file paths.
+  The functions make use of the *Sync* versions in the 'fs' package and behave 
+  pretty much like their bash equivalents, except for `ls` which is an enhancement
+  in that it accepts regular expressions instead of traditional globs
+
+  Some quick examples:
+  ```javascript
+  '~/.profile'.cat()    // would return the contents of your profile
+  'x.tst'.rm()          // removes the file
+  '~/t.txt'.mv('/tmp')  // would move t.txt in your home directory to the /tmp
+  
+  // listing is nicer
+  var d = '/var/log';
+  d.ls()                        // could return ['system.log', 'mail.log', 'postfix.log']
+  d.ls(/^s/)                    // ['system.log']
+  d.ls({withFileTypes: true})   // returns fs.DirEent objects
+
+  // cat accepts an encoding
+  var s = '~/.bashrc'.cat('utf8')
+  ```
+
 ## Arrays
 
    ### unique

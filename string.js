@@ -1,4 +1,5 @@
-module.exports = {
+var self = module.exports = {
+    fs: require('fs'),
     uc() { 
         return this.toUpperCase(); 
     },
@@ -64,6 +65,45 @@ module.exports = {
             : ret.length == 1 
             ? ret[0] 
             : ret;
+    },
+    json() {
+        return JSON.parse(this);
+    },
+    fex() {
+        return self.fs.existsSync(this);
+    },
+    fchmod(mode) {
+        return self.fs.fchmod(this, mode);
+    },
+    fchown(uid, gid) {
+        self.fs.chownSync(this, uid, gid);
+    },
+    fstat(opts) {
+        return self.fs.statSync(this, opts);
+    },
+    ls(re, opts = {}) {
+        if (re) {
+            var rex = re instanceof RegExp;
+            if (!rex) { opts = re; }
+        }
+        var ret = self.fs.readdirSync(this, opts);
+        if (rex) ret = ret.filter(nm => nm.match(re));
+        return ret;
+    },
+    mkdir(opts) {
+        self.fs.mkdirSync(this, opts);
+    },
+    cat(opts) {
+        return self.fs.readFileSync(this, opts);
+    },
+    cp(dst, flags) {
+        self.fs.copyFileSync(this, dst, flags);
+    },
+    mv(dst) {
+        self.fs.renameSync(this, dst);
+    },
+    rm() {
+        self.fs.unlinkSync(this);
     }
 }
 
