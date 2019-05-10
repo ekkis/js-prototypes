@@ -199,6 +199,11 @@ The following prototype extensions are provided by this package:
 
 ## Arrays
 
+   ## lc / uc
+
+   Uppercases or lowercases every element in the array.  Non-destructive so use it this
+   way: `var ls = ['a','b','c']; ls = ls.uc()`
+   
    ### unique
    
    As the name suggests, returns the contents or the array, without duplicates

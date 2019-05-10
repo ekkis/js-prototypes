@@ -5,6 +5,18 @@ describe('Arrays', () => {
 	before(() => {
 		jsp.install()
 	})
+	describe('case functions', () => {
+		it('uppercases', () => {
+			var input = 'a/B/c'.split('/')
+			var expected = ['A', 'B', 'C']
+			assert.deepEqual(input.uc(), expected)
+		})
+		it('lowercases', () => {
+			var input = 'A/B/c'.split('/')
+			var expected = ['a', 'b', 'c']
+			assert.deepEqual(input.lc(), expected)
+		})
+	})
 	describe('unique', () => {
 		it('Handles empty arrays', () => {
 			var actual = [].unique();

@@ -1,4 +1,10 @@
 module.exports = {
+    lc() {
+        return this.map(o => o.lc());
+    },
+    uc() {
+        return this.map(o => o.uc());
+    },
     unique() { 
         return this.filter((e, pos) => this.indexOf(e) == pos);
     },
