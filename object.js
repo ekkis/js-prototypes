@@ -2,6 +2,10 @@ module.exports = {
     keys() {
         return Object.keys(this);
     },
+    vals(fn) {
+        if (!fn) return this.keys().map(k => this[k]);
+        this.keys().forEach(k => fn(this[k]));
+    },
     isEmpty() {
         return this.keys().length == 0;
     },

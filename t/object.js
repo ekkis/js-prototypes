@@ -14,6 +14,20 @@ describe('Objects', () => {
 			assert.deepEqual(actual, expected)
 		})            
 	})
+	describe('vals', () => {
+		it('Niladic', () => {
+			var o = {a: 1, b: 2}
+			assert.deepEqual(o.vals(), [1,2])
+		})            
+		it('Callback', () => {
+			var n = 0, o = {a: 1, b: 2}
+			o.vals(v => {
+				assert.ok(v == 1 || v == 2);
+				n++;
+			})
+			assert.equal(n, 2, 'Number of checks failed')
+		})            
+	})
 	describe('isEmpty', () => {
 		it('Has no attributes', () => {
 			assert.ok({}.isEmpty())

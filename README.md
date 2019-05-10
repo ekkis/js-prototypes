@@ -203,7 +203,7 @@ The following prototype extensions are provided by this package:
 
    Uppercases or lowercases every element in the array.  Non-destructive so use it this
    way: `var ls = ['a','b','c']; ls = ls.uc()`
-   
+
    ### unique
    
    As the name suggests, returns the contents or the array, without duplicates
@@ -248,6 +248,17 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   ### keys
   
   Equivalent to `Object.keys()`
+
+  ### vals
+  ### vals callback-function
+
+  This function has two modes, the first of which returns an array of the values within the object,
+  and the second of which executes a callback function on each of the values.  The callback receives
+  a sole argument consisting of the value e.g.
+  ```js
+  {a: 1, b: 2}.vals()                   // returns [1,2]
+  {a: 1}.vals(v => { console.log(v) })  // prints 1
+  ```
 
   ### isEmpty
 
