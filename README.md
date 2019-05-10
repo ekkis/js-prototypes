@@ -128,10 +128,12 @@ The following prototype extensions are provided by this package:
   if everything should be turned into a string the final parameter may be indicated
   as true
 
-  ### arr delimiter-character-set = '/|,;. \t\n'
+  ### arr delimiter-character-set = '/|,;. \t\n' [callback]
 
   Splits the string by the character set specified (which defaults to the set shown
-  above) and returns the resulting array
+  above) and returns the resulting array.  If an optional callback is supplied, the
+  method will iterate through the resulting array, providing each element to the
+  callback
 
   ### nth n delimiter-character-set
 

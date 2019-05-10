@@ -187,6 +187,20 @@ describe('Strings', () => {
 			var expected = ['ett', 'två', 'tre']
 			assert.deepEqual('ett två tre'.arr(' '), expected)
 		})
+		it ('array - with callback', () => {
+			var n = 0, expected = ['ett', 'två']
+			'ett/två'.arr('/', v => {
+				assert.ok(expected.indexOf(v) > -1); n++;
+			})
+			assert.equal(n, 2, 'Iteration count failed')
+		})
+		it ('array - with only callback', () => {
+			var n = 0, expected = ['ett', 'två']
+			'ett/två'.arr(v => {
+				assert.ok(expected.indexOf(v) > -1); n++;
+			})
+			assert.equal(n, 2, 'Iteration count failed')
+		})
 		it ('nth - empty', () => {
 			var input = ''
 			var actual = input.nth(0)
