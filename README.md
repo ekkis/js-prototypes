@@ -96,6 +96,7 @@ The following prototype extensions are provided by this package:
   ```
   will display to users:
   > This paragraph should be one continuous line but was cut into multiple lines
+  
   > This is a second paragraph
 
   ### uc / lc / tc
@@ -128,12 +129,19 @@ The following prototype extensions are provided by this package:
   if everything should be turned into a string the final parameter may be indicated
   as true
 
-  ### arr delimiter-character-set = '/|,;. \t\n' [callback]
+  ### arr [delimiter-character-set = '/|,;.\t\n'] [callback]
 
   Splits the string by the character set specified (which defaults to the set shown
   above) and returns the resulting array.  If an optional callback is supplied, the
   method will iterate through the resulting array, providing each element to the
   callback
+
+  ### splitn [delimiter-character-set = '/|,;.\t\n'] [segments = 2]
+
+  Splits a string into the number of segments specified, for example: `'this/that/these'.splitn()`
+  will regenerate `['this', 'that/these']`.  If the number of segments specified is greater
+  than those available, the function returns the shorter of the two.  Specifying a single
+  segment will return the entire string in an array
 
   ### nth n delimiter-character-set
 

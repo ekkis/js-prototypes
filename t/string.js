@@ -201,6 +201,31 @@ describe('Strings', () => {
 			})
 			assert.equal(n, 2, 'Iteration count failed')
 		})
+		it ('splitn - base case', () => {
+			var actual = 'ett/två/tre'.splitn();
+			var expected = ['ett', 'två/tre']
+			assert.deepEqual(actual, expected)
+		})
+		it ('splitn - invalid segment length', () => {
+			var actual = 'ett/två/tre/fyra/fem'.splitn(1);
+			var expected = ['ett/två/tre/fyra/fem']
+			assert.deepEqual(actual, expected)
+		})
+		it ('splitn - explicit number', () => {
+			var actual = 'ett/två/tre/fyra/fem'.splitn(3);
+			var expected = ['ett', 'två', 'tre/fyra/fem']
+			assert.deepEqual(actual, expected)
+		})
+		it ('splitn - segment deficit', () => {
+			var actual = 'ett/två/tre'.splitn(4);
+			var expected = ['ett', 'två', 'tre']
+			assert.deepEqual(actual, expected)
+		})
+		it ('splitn - with delimiters', () => {
+			var actual = 'ett  två  tre'.splitn(' ');
+			var expected = ['ett', 'två  tre']
+			assert.deepEqual(actual, expected)
+		})
 		it ('nth - empty', () => {
 			var input = ''
 			var actual = input.nth(0)

@@ -45,10 +45,24 @@ var self = module.exports = {
     },
     arr(dc, cb) {
         if (typeof dc == 'function') { cb = dc; dc = '' }
-        if (!dc) dc = '/|,;.\t\n';
-        var ret = this.split(new RegExp('[' + dc + ']+'));
+        var ret = this.split(charSet(dc));
         if (!cb) return ret;
         ret.forEach(v => cb(v));
+    },
+    splitn(dc, n = 2) {
+        if (Number.isInteger(dc)) { n = dc; dc = ''}
+        if (n < 2) return [this.toString()];
+        if (!dc) dc = '/|,;.\t\n';
+        
+        var ret = [], s = this.toString();
+        for (var i = 0; i < n - 1; i++) {
+            let m = s.match(charSet(dc));
+            if (!m) break;
+            ret[i] = s.substr(0, m.index);
+            s = s.substr(m.index + m[0].length);
+        }
+        ret[i] = s;
+        return ret;
     },
     nth(n, dc) {
         var r = this.arr(dc);
@@ -114,4 +128,9 @@ var self = module.exports = {
 function isRegExpGlobal(re) {
     var mods = re.toString().split('/')[2];
     return mods.indexOf('g') > -1;
+}
+
+function charSet(dc) {
+    if (!dc) dc = '/|,;.\t\n';
+    return new RegExp('[' + dc + ']+');
 }
