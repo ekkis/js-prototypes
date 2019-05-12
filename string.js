@@ -87,41 +87,52 @@ var self = module.exports = {
     json() {
         return JSON.parse(this);
     },
-    fex() {
-        return self.fs.existsSync(this);
+    mkdir(opts) {
+        self.fs.mkdirSync(this.toString(), opts);
     },
-    fchmod(mode) {
-        return self.fs.fchmod(this, mode);
-    },
-    fchown(uid, gid) {
-        self.fs.chownSync(this, uid, gid);
-    },
-    fstat(opts) {
-        return self.fs.statSync(this, opts);
+    rmdir() {
+        self.fs.rmdirSync(this.toString());
     },
     ls(re, opts = {}) {
         if (re) {
             var rex = re instanceof RegExp;
             if (!rex) { opts = re; }
         }
-        var ret = self.fs.readdirSync(this, opts);
+        var ret = self.fs.readdirSync(this.toString(), opts);
         if (rex) ret = ret.filter(nm => nm.match(re));
         return ret;
     },
-    mkdir(opts) {
-        self.fs.mkdirSync(this, opts);
+    cat(opts = 'utf8') {
+        return self.fs.readFileSync(this.toString(), opts);
     },
-    cat(opts) {
-        return self.fs.readFileSync(this, opts);
+    tee(s, opts = {}) {
+        var argIsPath = 'argIsPath' in opts
+            ? opts.argIsPath 
+            : s.indexOf('/') > -1
+            ;
+        var [path, data] = swap(!argIsPath, s, this.toString());
+        self.fs.writeFileSync(path, data, opts);
     },
     cp(dst, flags) {
-        self.fs.copyFileSync(this, dst, flags);
+        self.fs.copyFileSync(this.toString(), dst, flags);
     },
     mv(dst) {
-        self.fs.renameSync(this, dst);
+        self.fs.renameSync(this.toString(), dst);
     },
     rm() {
-        self.fs.unlinkSync(this);
+        self.fs.unlinkSync(this.toString());
+    },
+    chmod(mode) {
+        return self.fs.chmodSync(this.toString(), mode);
+    },
+    chown(uid, gid) {
+        self.fs.chownSync(this.toString(), uid, gid);
+    },
+    fex() {
+        return self.fs.existsSync(this.toString());
+    },
+    fstat(opts) {
+        return self.fs.statSync(this.toString(), opts);
     }
 }
 
@@ -133,4 +144,8 @@ function isRegExpGlobal(re) {
 function charSet(dc) {
     if (!dc) dc = '/|,;.\t\n';
     return new RegExp('[' + dc + ']+');
+}
+
+function swap(cond, a, b) {
+    return cond ? [b, a] : [a, b];
 }

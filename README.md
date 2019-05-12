@@ -184,20 +184,37 @@ The following prototype extensions are provided by this package:
 
   Parses the given Json string, returning an object
 
-  ### fex / fchmod / fchown / fstat / ls / mkdir / cat / cp / mv / rm
+  ### mkdir / rmdir / ls
+  ### fex / chmod / chown / fstat 
+  ### cat / tee / cp / mv / rm
 
   This family of functions provides filesystem functionality on file paths.
   The functions make use of the *Sync* versions in the 'fs' package and behave 
   pretty much like their bash equivalents, except for `ls` which is an enhancement
   in that it accepts regular expressions instead of traditional globs
 
-  Some quick examples:
+  Note that `tee` is used for writing to files but has two modes, 1) where the
+  argument specifies the path, and 2) where the object the method is called on
+  serves as the path
+  
+  The determining factor for which is which is the presence of slashes in the argument,
+  but this creates ambiguity.  Consider the third call below where neither is clearly
+  a path (because there are no slashes).  In this case, the the argument is presumed
+  to be data, but this can be forced with the option shown:
+  ```js
+  '/tmp/t.txt'.tee('sample text')           // these two calls
+  'sample text'.tee('/tmp/t.txt')           // are equivalent
+
+  't'.tee('sample text')                    // this call is ambiguous so the argument is presumed data
+  'sample text'.tee('t', {argIsPath: true}) // the option forces the argument to serve as a path
+  ```
+  A few other examples:
   ```javascript
   '~/.profile'.cat()    // would return the contents of your profile
   'x.tst'.rm()          // removes the file
   '~/t.txt'.mv('/tmp')  // would move t.txt in your home directory to the /tmp
   
-  // listing is nicer
+  // listing is nicer because it support regular expressions
   var d = '/var/log';
   d.ls()                        // could return ['system.log', 'mail.log', 'postfix.log']
   d.ls(/^s/)                    // ['system.log']

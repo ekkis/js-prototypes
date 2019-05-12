@@ -1,4 +1,5 @@
-var assert = require('assert').strict
+const fs = require('fs')
+const assert = require('assert').strict
 const jsp = require('../index')
 
 describe('Strings', () => {
@@ -157,24 +158,24 @@ describe('Strings', () => {
 	})
 	describe('case functions', () => {
 		var s = 'in a littLe bOOk';
-		it ('Uppercases', () => {
+		it('Uppercases', () => {
 			var actual = s.uc()
 			var expected = s.toUpperCase()
 			assert.equal(actual, expected)
 		})
-		it ('Lowercases', () => {
+		it('Lowercases', () => {
 			var actual = s.lc()
 			var expected = s.toLowerCase()
 			assert.equal(actual, expected)
 		})
-		it ('Titlecases', () => {
+		it('Titlecases', () => {
 			var actual = s.tc()
 			var expected = 'In a Little Book'
 			assert.equal(actual, expected)
 		})
 	})
 	describe('list management', () => {
-		it ('array - base case', () => {
+		it('array - base case', () => {
 			var expected = ['ett', 'två', 'tre']
 			assert.deepEqual('ett|två|tre'.arr(), expected, 'Pipes failed')
 			assert.deepEqual('ett,två,tre'.arr(), expected, 'Commas failed')
@@ -183,70 +184,70 @@ describe('Strings', () => {
 			assert.deepEqual('ett\ttvå\ttre'.arr(), expected, 'Tabs failed')
 			assert.deepEqual('ett\ntvå\ntre'.arr(), expected, 'Newlines failed')
 		})
-		it ('array - custom delimiter', () => {
+		it('array - custom delimiter', () => {
 			var expected = ['ett', 'två', 'tre']
 			assert.deepEqual('ett två tre'.arr(' '), expected)
 		})
-		it ('array - with callback', () => {
+		it('array - with callback', () => {
 			var n = 0, expected = ['ett', 'två']
 			'ett/två'.arr('/', v => {
 				assert.ok(expected.indexOf(v) > -1); n++;
 			})
 			assert.equal(n, 2, 'Iteration count failed')
 		})
-		it ('array - with only callback', () => {
+		it('array - with only callback', () => {
 			var n = 0, expected = ['ett', 'två']
 			'ett/två'.arr(v => {
 				assert.ok(expected.indexOf(v) > -1); n++;
 			})
 			assert.equal(n, 2, 'Iteration count failed')
 		})
-		it ('splitn - base case', () => {
+		it('splitn - base case', () => {
 			var actual = 'ett/två/tre'.splitn();
 			var expected = ['ett', 'två/tre']
 			assert.deepEqual(actual, expected)
 		})
-		it ('splitn - invalid segment length', () => {
+		it('splitn - invalid segment length', () => {
 			var actual = 'ett/två/tre/fyra/fem'.splitn(1);
 			var expected = ['ett/två/tre/fyra/fem']
 			assert.deepEqual(actual, expected)
 		})
-		it ('splitn - explicit number', () => {
+		it('splitn - explicit number', () => {
 			var actual = 'ett/två/tre/fyra/fem'.splitn(3);
 			var expected = ['ett', 'två', 'tre/fyra/fem']
 			assert.deepEqual(actual, expected)
 		})
-		it ('splitn - segment deficit', () => {
+		it('splitn - segment deficit', () => {
 			var actual = 'ett/två/tre'.splitn(4);
 			var expected = ['ett', 'två', 'tre']
 			assert.deepEqual(actual, expected)
 		})
-		it ('splitn - with delimiters', () => {
+		it('splitn - with delimiters', () => {
 			var actual = 'ett  två  tre'.splitn(' ');
 			var expected = ['ett', 'två  tre']
 			assert.deepEqual(actual, expected)
 		})
-		it ('nth - empty', () => {
+		it('nth - empty', () => {
 			var input = ''
 			var actual = input.nth(0)
 			assert.equal(actual, '')
 		})
-		it ('nth - base case', () => {
+		it('nth - base case', () => {
 			var input = 'ett/två/tre'
 			assert.equal(input.nth(0), 'ett')
 			assert.equal(input.nth(1), 'två')
 			assert.equal(input.nth(2), 'tre')
 		})
-		it ('nth - index exceeds', () => {
+		it('nth - index exceeds', () => {
 			var input = 'ett/två/tre'
 			assert.equal(input.nth(3), '')
 		})
-		it ('nth - negative index', () => {
+		it('nth - negative index', () => {
 			var input = 'ett/två/tre'
 			assert.equal(input.nth(-1), 'tre')
 			assert.equal(input.nth(-2), 'två')
 		})
-		it ('nth - delimiter defaults', () => {
+		it('nth - delimiter defaults', () => {
 			assert.equal('ett|två|tre'.nth(0), 'ett', 'Pipes failed')
 			assert.equal('ett,två,tre'.nth(0), 'ett', 'Commas failed')
 			assert.equal('ett;två;tre'.nth(0), 'ett', 'Semicolons failed')
@@ -254,32 +255,32 @@ describe('Strings', () => {
 			assert.equal('ett\ttvå\ttre'.nth(0), 'ett', 'Tabs failed')
 			assert.equal('ett\ntvå\ntre'.nth(0), 'ett', 'Newlines failed')
 		})
-		it ('nth - delimiter options', () => {
+		it('nth - delimiter options', () => {
 			assert.equal('ett#två#tre'.nth(0, '#'), 'ett')
 		})
-		it ('nth - empty elements', () => {
+		it('nth - empty elements', () => {
 			assert.equal('ett//två///tre'.nth(1), 'två')
 		})
 	})
 	describe('extracts regular expression', () => {
 		var re = /\((.*?)\)/
-		it ('base case', () => {
+		it('base case', () => {
 			assert.equal('test (case)'.extract(re), 'case')
 		})
-		it ('handles mismatch', () => {
+		it('handles mismatch', () => {
 			var input = 'test [case]'
 			assert.deepEqual(input.extract(re), [])
 		})
-		it ('handles mismatch with original return', () => {
+		it('handles mismatch with original return', () => {
 			var input = 'test [case]'
 			assert.equal(input.extract(re, true), input)
 		})
-		it ('supports multiple fields', () => {
+		it('supports multiple fields', () => {
 			var re = /(\w+) first (\w+)/
 			var input = 'test a first case'
 			assert.deepEqual(input.extract(re), ['a', 'case'])
 		})
-		it ('supports global captures', () => {
+		it('supports global captures', () => {
 			var re = /\{(\w+)\}/g
 			var input = '{a} first {test} case {for} global'
 			assert.deepEqual(input.extract(re), ['a', 'test', 'for'])
@@ -290,80 +291,183 @@ describe('Strings', () => {
 			assert.deepEqual('{"a":"x", "b":"y"}'.json(), {a: "x", b: "y"})
 		})
 	})
+	describe('barf', () => {
+		describe('feek', () => {
+			var x = 'shite'
+			it('works', () => {
+				assert.equal(x, 'shite')
+			})
+		})
+	})
 	describe('filesystem functions', () => {
-		var f = './string.js'
-		jsp.extensions.string.fs = {
-			existsSync(arg) {
-				return f == arg
-			},
-			fchmod(arg, mode) {
-				assert.ok(arg == f)
-			},
-			chownSync(arg, uid, gid) {
-				assert.ok(arg == f)
-			},
-			statSync(arg, opts) {
-				return {test: 'ok'}
-			},
-			readdirSync(arg, opts) {
-				return opts.withFileTypes
-					? {"name":"LICENSE"}
-					: 'x/y/z'.split('/');
-			},
-			mkdirSync(arg, opts) {
-				assert.ok(arg == f)
-			},
-			readFileSync(arg, opts) {
-				return 'test-string'
-			},
-			copyFileSync(arg, dst, flags) {
-				assert.ok(arg == f && dst == 'x')
-			},
-			renameSync(arg, dst) {
-				assert.ok(arg == f && dst == 'x')
-			},
-			unlinkSync(arg) {
-				assert.ok(arg == f)
-			}
-		}
-		it ('checks for file existence', () => {
-			assert.ok(f.fex())
+		describe('unit tests', () => {
+			var f = './__f__'
+			before(() => {
+				fs.writeFileSync(f, 'test')
+				jsp.extensions.string.fs = mockfs(f)
+			})
+			after(() => {
+				if (fs.existsSync(f)) fs.unlinkSync(f)
+				jsp.extensions.string.fs = fs
+			})
+			it('checks for file existence', () => {
+				assert.ok(f.fex())
+			})
+			it('fails for missing file', () => {
+				assert.ok(!'./_xx_'.fex())
+			})
+			it('file mode changes', () => { f.chmod(0) })
+			it('file ownership', () => { f.chown(0, 0) })
+			it('file stats', () => {
+				assert.deepEqual(f.fstat(), {test: 'ok'})
+			})
+			it('directory listing - base case', () => {
+				assert.deepEqual(f.ls(), ['x', 'y', 'z'])
+			})
+			it('directory listing - regular expression', () => {
+				assert.deepEqual(f.ls(/^x$/), ['x'])
+			})
+			it('directory listing - entries', () => {
+				assert.deepEqual(f.ls({withFileTypes: true}), {"name":"LICENSE"})
+			})
+			it('make directory', () => { f.mkdir() })
+			it('remove directory', () => { f.rmdir() })
+			it('file read', () => { assert.equal(f.cat(), 'test-string') })
+			it('file copy', () => { f.cp('x') })
+			it('file rename', () => { f.mv('x') })
+			it('file removal', () => { f.rm() })
 		})
-		it ('fails for missing file', () => {
-			assert.ok(!'./_xx_'.fex())
-		})
-		it ('file mode changes', () => {
-			f.fchmod()
-		})
-		it ('file ownership', () => {
-			f.fchown()
-		})
-		it ('file stats', () => {
-			assert.deepEqual(f.fstat(), {test: 'ok'})
-		})
-		it ('directory listing - base case', () => {
-			assert.deepEqual(f.ls(), ['x', 'y', 'z'])
-		})
-		it ('directory listing - regular expression', () => {
-			assert.deepEqual(f.ls(/^x$/), ['x'])
-		})
-		it ('directory listing - entries', () => {
-			assert.deepEqual(f.ls({withFileTypes: true}), {"name":"LICENSE"})
-		})
-		it ('make directory', () => {
-			assert.equal()
-		})
-		it ('file read', () => {
-			assert.equal(f.cat(), 'test-string')
-		})
-		it ('file copy', () => {
-			f.cp('x')
-		})
-		it ('file rename', () => {
-			f.mv('x')
-		})
-		it ('file removal', () => {
-			f.rm()
+		describe('integration tests', () => {
+			var d = '__tst__';
+			it('creates a directory', () => {
+				if (fs.existsSync(d)) rmdir(d)
+				d.mkdir()
+				assert.ok(fs.existsSync(d), 'directory not created')
+			})
+			it('creates file - form 1', () => {
+				var path = d + '/f1.txt'
+				if (fs.existsSync(path)) fs.unlinkSync(path)
+				path.tee('contents of file 1')
+				assert.ok(fs.existsSync(path))
+			})
+			it('creates file - form 2', () => {
+				var path = d + '/f2.txt'
+				if (fs.existsSync(path)) fs.unlinkSync(path)
+				'contents of file 1'.tee(path)
+				assert.ok(fs.existsSync(path))
+			})
+			it('copies file', () => {
+				var orig = d + '/f1.txt'
+				var dup = d + '/f3.txt'
+				if (fs.existsSync(dup)) fs.unlinkSync(dup)
+
+				orig.cp(dup)
+				assert.ok(fs.existsSync(dup))
+			})
+			it('moves file', () => {
+				var orig = d + '/f3.txt'
+				var dup = d + '/f4.txt'
+				if (fs.existsSync(dup)) fs.unlinkSync(dup)
+
+				orig.mv(dup)
+				assert.ok(fs.existsSync(dup))
+				assert.ok(!fs.existsSync(orig))
+			})
+			it('removes file', () => {
+				var path = d + '/f4.txt'
+				path.rm();
+				assert.ok(!fs.existsSync(path))
+			})
+			it('reads file', () => {
+				var path = d + '/f1.txt'
+				assert.equal(path.cat(), 'contents of file 1')
+			})
+			it('reads properties', () => {
+				var path = d + '/f1.txt'
+				var st = path.fstat()
+				assert.ok(st instanceof fs.Stats)
+			})
+			it('reads directory', () => {
+				assert.deepEqual(d.ls(), ['f1.txt', 'f2.txt'])
+			})
+			it('file existence', () => {
+				var path = d + '/f1.txt'
+				assert.ok(path.fex())
+				path = d + '/x.txt'
+				assert.ok(!path.fex())
+			})
+			it('directory existence', () => {
+				assert.ok(d.fex())
+			})
+			// need to figure out what owner to change to
+			it.skip('change ownership', () => {
+				var path = d + '/f1.txt'
+				var ost = fs.statSync(path)
+				path.chown(1, 1)
+				var nst = fs.statSync(path)
+				assert.notEqual(nst.uid, ost.uid)
+				assert.notEqual(nst.gid, ost.gid)
+				path.chown(ost.uid, ost.gid)
+			})
+			it('change mode', () => {
+				var path = d + '/f1.txt'
+				var ost = fs.statSync(path)
+				path.chmod(0)
+				var nst = fs.statSync(path)
+				assert.notEqual(ost.mode, nst.mode)
+				path.chmod(ost.mode)
+			})
+			it('removes directory', () => {
+				var f1 = d + '/f1.txt'; f1.rm()
+				var f2 = d + '/f2.txt'; f2.rm()
+				d.rmdir()
+				assert.ok(!fs.existsSync(d), 'directory not removed')
+			})
 		})
 	})
 })
+
+function rmdir(path) {
+	fs.readdirSync(path).forEach(fn => fs.unlinkSync(path + '/' + fn))
+	fs.rmdirSync(path)
+}
+
+function mockfs(f) {
+	return {
+		existsSync(arg) {
+			return f == arg
+		},
+		chmodSync(arg, mode) {
+			assert.ok(arg == f)
+		},
+		chownSync(arg, uid, gid) {
+			assert.ok(arg == f && uid == 0 && gid == 0)
+		},
+		statSync(arg, opts) {
+			return {test: 'ok'}
+		},
+		readdirSync(arg, opts) {
+			return opts.withFileTypes
+				? {"name":"LICENSE"}
+				: 'x/y/z'.split('/');
+		},
+		mkdirSync(arg, opts) {
+			assert.ok(arg == f)
+		},
+		rmdirSync(arg) {
+			assert.ok(arg == f)
+		},
+		readFileSync(arg, opts) {
+			return 'test-string'
+		},
+		copyFileSync(arg, dst, flags) {
+			assert.ok(arg == f && dst == 'x')
+		},
+		renameSync(arg, dst) {
+			assert.ok(arg == f && dst == 'x')
+		},
+		unlinkSync(arg) {
+			assert.ok(arg == f)
+		}
+	}
+}
