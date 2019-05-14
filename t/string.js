@@ -291,14 +291,6 @@ describe('Strings', () => {
 			assert.deepEqual('{"a":"x", "b":"y"}'.json(), {a: "x", b: "y"})
 		})
 	})
-	describe('barf', () => {
-		describe('feek', () => {
-			var x = 'shite'
-			it('works', () => {
-				assert.equal(x, 'shite')
-			})
-		})
-	})
 	describe('filesystem functions', () => {
 		describe('unit tests', () => {
 			var f = './__f__'
@@ -327,7 +319,7 @@ describe('Strings', () => {
 			it('directory listing - regular expression', () => {
 				assert.deepEqual(f.ls(/^x$/), ['x'])
 			})
-			it('directory listing - entries', () => {
+			it('directory listing - entry objects', () => {
 				assert.deepEqual(f.ls({withFileTypes: true}), {"name":"LICENSE"})
 			})
 			it('make directory', () => { f.mkdir() })
@@ -389,6 +381,11 @@ describe('Strings', () => {
 			})
 			it('reads directory', () => {
 				assert.deepEqual(d.ls(), ['f1.txt', 'f2.txt'])
+			})
+			it('reads directory - entry objects', () => {
+				var actual = d.ls({withFileTypes: true})
+				assert.ok(actual[0] instanceof fs.Dirent)
+				assert.equal(actual[0].name, 'f1.txt')
 			})
 			it('file existence', () => {
 				var path = d + '/f1.txt'

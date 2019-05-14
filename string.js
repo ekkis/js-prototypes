@@ -94,12 +94,19 @@ var self = module.exports = {
         self.fs.rmdirSync(this.toString());
     },
     ls(re, opts = {}) {
+        var path = this.toString();
         if (re) {
             var rex = re instanceof RegExp;
             if (!rex) { opts = re; }
         }
-        var ret = self.fs.readdirSync(this.toString(), opts);
-        if (rex) ret = ret.filter(nm => nm.match(re));
+        var ret = self.fs.readdirSync(path, opts);
+        // node v8 does not support withFileTypes so we must emulate it
+        if (opts.withFileTypes && typeof ret[0] == 'string') {
+            ret = ret.map(fn => self.fs.statSync(path + '/' + fn))
+        }
+        if (rex) ret = ret.filter(nm => (
+            typeof nm == 'object' ? nm.name : nm).match(re)
+        );
         return ret;
     },
     cat(opts = 'utf8') {

@@ -190,10 +190,10 @@ The following prototype extensions are provided by this package:
 
   This family of functions provides filesystem functionality on file paths.
   The functions make use of the *Sync* versions in the 'fs' package and behave 
-  pretty much like their bash equivalents, except for `ls` which is an enhancement
-  in that it accepts regular expressions instead of traditional globs
+  pretty much like their bash equivalents
 
-  Note that `tee` is used for writing to files but has two modes, 1) where the
+  **- Notes -**
+  The `tee` method is used for writing to files but has two modes, 1) where the
   argument specifies the path, and 2) where the object the method is called on
   serves as the path
   
@@ -208,18 +208,24 @@ The following prototype extensions are provided by this package:
   't'.tee('sample text')                    // this call is ambiguous so the argument is presumed data
   'sample text'.tee('t', {argIsPath: true}) // the option forces the argument to serve as a path
   ```
-  A few other examples:
+
+  The `ls` command accepts two optional parameters, a regular expression to match
+  names against, and an options object, which is passed to the underlying `fs.readdirSync()`
+  method.  Options may be passed without supplying a regular expression and vice-versa.
+  Additionally, Node versions below 10 do not support the `withFileTypes` option but this
+  method polyfills so the output is consistent:
+  ```js
+  var d = '/var/log';
+  d.ls()                        // could return ['system.log', 'mail.log', 'postfix.log']
+  d.ls(/^s/)                    // regular expressions are nicer.  returns: ['system.log']
+  d.ls({withFileTypes: true})   // returns fs.Dirent objects
+  ```
+  Other examples:
   ```javascript
   '~/.profile'.cat()    // would return the contents of your profile
   'x.tst'.rm()          // removes the file
   '~/t.txt'.mv('/tmp')  // would move t.txt in your home directory to the /tmp
   
-  // listing is nicer because it support regular expressions
-  var d = '/var/log';
-  d.ls()                        // could return ['system.log', 'mail.log', 'postfix.log']
-  d.ls(/^s/)                    // ['system.log']
-  d.ls({withFileTypes: true})   // returns fs.DirEent objects
-
   // cat accepts an encoding
   var s = '~/.bashrc'.cat('utf8')
   ```
