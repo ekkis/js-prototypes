@@ -201,6 +201,11 @@ The following prototype extensions are provided by this package:
   the full path to the parent directory, whilst `'~/.bashrc`.resolve()` returns
   the full path to the bash resource file
   
+  Both `mkdir` and `rmdir` both recurse e.g. `'/tmp/a/b/c/d'.mkdir()` creates
+  each component in the path as needed, but in the case of the latter an 
+  explicit directive is needed i.e. `'/tmp/a'.rmdir()` will fail but
+  `'/tmp/a'.rmdir({recurse: true})` succeeds
+  
   The `tee` method is used for writing to files but has two modes, 1) where the
   argument specifies the path, and 2) where the object the method is called on
   serves as the path
@@ -220,6 +225,10 @@ The following prototype extensions are provided by this package:
   The `ls` command accepts two optional parameters, a regular expression to match
   names against, and an options object, which is passed to the underlying `fs.readdirSync()`
   method.  Options may be passed without supplying a regular expression and vice-versa.
+  
+  Like `rmdir`, this method also supports an explicit recursion directive, therefore
+  `'/tmp'.ls({recurse: true})` will return the entire tree under the /tmp directory
+
   Additionally, Node versions below 10 do not support the `withFileTypes` option but this
   method polyfills so the output is consistent:
   ```js

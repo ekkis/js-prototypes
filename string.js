@@ -1,4 +1,5 @@
-var path = require('path');
+var jspath = require('path');
+var flat = require('./array').flat
 
 var self = module.exports = {
     fs: require('fs'),
@@ -92,24 +93,39 @@ var self = module.exports = {
         return JSON.parse(this);
     },
     resolve() {
-        return path.resolve(this.toString());
+        return jspath.resolve(this.toString());
     },
     mkdir(opts) {
-        self.fs.mkdirSync(this.toString(), opts);
+        // var path = this.toString();
+        // self.fs.mkdirSync(path, Object.assign(opts, {recursive: true}));
+        var path = this.toString().resolve().split('/');
+        for (var i = 2; i <= path.length; i++) {
+            var d = path.slice(0, i).join('/');
+            if (!self.fs.existsSync(d))
+                self.fs.mkdirSync(d, opts);
+        }
     },
-    rmdir() {
-        self.fs.rmdirSync(this.toString());
+    rmdir(opts = {}) {
+        var path = this.toString();
+        if (opts.recurse) path.ls({recurse: true, withFileTypes: true})
+            .sort((a,b) => a.name.length < b.name.length ? 1 : -1)
+            .forEach(o => {
+                if (o.isDirectory()) self.fs.rmdirSync(o.name);
+                else self.fs.unlinkSync(o.name);
+            })
+        self.fs.rmdirSync(path);
     },
     ls(re, opts = {}) {
         var path = this.toString();
         if (re) {
             var rex = re instanceof RegExp;
-            if (!rex) { opts = re; }
+            if (!rex) { opts = re; re = undefined; }
         }
-        var ret = self.fs.readdirSync(path, opts);
-        // node v8 does not support withFileTypes so we must emulate it
-        if (opts.withFileTypes && typeof ret[0] == 'string') {
-            ret = ret.map(fn => self.fs.statSync(path + '/' + fn))
+        var ret;
+        if (!opts.recurse) ret = ls(path, re, opts);
+        else {
+            ret = lsr(path, re, opts);
+            if (!opts.withFileTypes) ret = ret.map(o => o.name);
         }
         if (rex) ret = ret.filter(nm => (
             typeof nm == 'object' ? nm.name : nm).match(re)
@@ -162,4 +178,31 @@ function charSet(dc) {
 
 function swap(cond, a, b) {
     return cond ? [b, a] : [a, b];
+}
+
+function ls(path, re, opts = {}) {
+    var ret = self.fs.readdirSync(path, opts);
+    // node v8 does not support withFileTypes so we must emulate it
+    if (opts.withFileTypes && typeof ret[0] == 'string') {
+        ret = ret.map(fn => self.fs.statSync(path + '/' + fn))
+    }
+    return ret;
+}
+
+function lsr(path, re, opts) {
+    if (!path.endsWith('/')) path += '/'
+    try {
+        var ret = ls(path, re, Object.assign({withFileTypes: true}, opts))
+            .map(o => {
+                o.name = path + o.name;
+                var ret = [o]
+                if (o.isDirectory()) 
+                    ret = ret.concat(lsr(o.name, re, opts))
+                return ret;
+            })
+        return Array.prototype.flat ? ret.flat() : flat(ret);
+    }
+    catch(e) {
+        console.error(e);
+    }        
 }

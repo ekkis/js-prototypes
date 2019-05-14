@@ -1,3 +1,4 @@
+const os = require('os')
 const fs = require('fs')
 const assert = require('assert').strict
 const jsp = require('../index')
@@ -296,183 +297,123 @@ describe('Strings', () => {
 		})
 	})
 	describe('filesystem functions', () => {
-		describe('unit tests', () => {
-			var f = './__f__'
-			before(() => {
-				fs.writeFileSync(f, 'test')
-				jsp.extensions.string.fs = mockfs(f)
-			})
-			after(() => {
-				if (fs.existsSync(f)) fs.unlinkSync(f)
-				jsp.extensions.string.fs = fs
-			})
-			it('checks for file existence', () => {
-				assert.ok(f.fex())
-			})
-			it('fails for missing file', () => {
-				assert.ok(!'./_xx_'.fex())
-			})
-			it('file mode changes', () => { f.chmod(0) })
-			it('file ownership', () => { f.chown(0, 0) })
-			it('file stats', () => {
-				assert.deepEqual(f.fstat(), {test: 'ok'})
-			})
-			it('directory listing - base case', () => {
-				assert.deepEqual(f.ls(), ['x', 'y', 'z'])
-			})
-			it('directory listing - regular expression', () => {
-				assert.deepEqual(f.ls(/^x$/), ['x'])
-			})
-			it('directory listing - entry objects', () => {
-				assert.deepEqual(f.ls({withFileTypes: true}), {"name":"LICENSE"})
-			})
-			it('make directory', () => { f.mkdir() })
-			it('remove directory', () => { f.rmdir() })
-			it('file read', () => { assert.equal(f.cat(), 'test-string') })
-			it('file copy', () => { f.cp('x') })
-			it('file rename', () => { f.mv('x') })
-			it('file removal', () => { f.rm() })
+		var d = os.tmpdir() + '/__tst__';
+		it('resolves a path', () => {
+			var path = require('path').resolve('.')
+			assert.equal('.'.resolve(), path) 
 		})
-		describe('integration tests', () => {
-			var d = '__tst__';
-			it('resolves a path', () => {
-				var path = require('path').resolve('.')
-				assert.equal('.'.resolve(), path) 
-			})
-			it('creates a directory', () => {
-				if (fs.existsSync(d)) rmdir(d)
-				d.mkdir()
-				assert.ok(fs.existsSync(d), 'directory not created')
-			})
-			it('creates file - form 1', () => {
-				var path = d + '/f1.txt'
-				if (fs.existsSync(path)) fs.unlinkSync(path)
-				path.tee('contents of file 1')
-				assert.ok(fs.existsSync(path))
-			})
-			it('creates file - form 2', () => {
-				var path = d + '/f2.txt'
-				if (fs.existsSync(path)) fs.unlinkSync(path)
-				'contents of file 1'.tee(path)
-				assert.ok(fs.existsSync(path))
-			})
-			it('copies file', () => {
-				var orig = d + '/f1.txt'
-				var dup = d + '/f3.txt'
-				if (fs.existsSync(dup)) fs.unlinkSync(dup)
+		it('creates a directory', () => {
+			if (fs.existsSync(d)) rmdir(d)
+			d.mkdir()
+			assert.ok(fs.existsSync(d), 'directory not created')
+		})
+		it('creates a directory - recursive', () => {
+			if (fs.existsSync(d)) rmdir(d)
+			var path = d + '/d1/d2/d3'
+			path.mkdir()
+			assert.ok(fs.existsSync(path), 'directory not created')
+		})
+		it('creates file - form 1', () => {
+			var path = d + '/f1.txt'
+			if (fs.existsSync(path)) fs.unlinkSync(path)
+			path.tee('contents of file 1')
+			assert.ok(fs.existsSync(path))
+		})
+		it('creates file - form 2', () => {
+			var path = d + '/f2.txt'
+			if (fs.existsSync(path)) fs.unlinkSync(path)
+			'contents of file 1'.tee(path)
+			assert.ok(fs.existsSync(path))
+		})
+		it('copies file', () => {
+			var orig = d + '/f1.txt'
+			var dup = d + '/f3.txt'
+			if (fs.existsSync(dup)) fs.unlinkSync(dup)
 
-				orig.cp(dup)
-				assert.ok(fs.existsSync(dup))
-			})
-			it('moves file', () => {
-				var orig = d + '/f3.txt'
-				var dup = d + '/f4.txt'
-				if (fs.existsSync(dup)) fs.unlinkSync(dup)
+			orig.cp(dup)
+			assert.ok(fs.existsSync(dup))
+		})
+		it('moves file', () => {
+			var orig = d + '/f3.txt'
+			var dup = d + '/f4.txt'
+			if (fs.existsSync(dup)) fs.unlinkSync(dup)
 
-				orig.mv(dup)
-				assert.ok(fs.existsSync(dup))
-				assert.ok(!fs.existsSync(orig))
-			})
-			it('removes file', () => {
-				var path = d + '/f4.txt'
-				path.rm();
-				assert.ok(!fs.existsSync(path))
-			})
-			it('reads file', () => {
-				var path = d + '/f1.txt'
-				assert.equal(path.cat(), 'contents of file 1')
-			})
-			it('reads properties', () => {
-				var path = d + '/f1.txt'
-				var st = path.fstat()
-				assert.ok(st instanceof fs.Stats)
-			})
-			it('reads directory', () => {
-				assert.deepEqual(d.ls(), ['f1.txt', 'f2.txt'])
-			})
-			it('reads directory - entry objects', () => {
-				var actual = d.ls({withFileTypes: true})
-				assert.ok(actual[0] instanceof fs.Dirent)
-				assert.equal(actual[0].name, 'f1.txt')
-			})
-			it('file existence', () => {
-				var path = d + '/f1.txt'
-				assert.ok(path.fex())
-				path = d + '/x.txt'
-				assert.ok(!path.fex())
-			})
-			it('directory existence', () => {
-				assert.ok(d.fex())
-			})
-			// need to figure out what owner to change to
-			it.skip('change ownership', () => {
-				var path = d + '/f1.txt'
-				var ost = fs.statSync(path)
-				path.chown(1, 1)
-				var nst = fs.statSync(path)
-				assert.notEqual(nst.uid, ost.uid)
-				assert.notEqual(nst.gid, ost.gid)
-				path.chown(ost.uid, ost.gid)
-			})
-			it('change mode', () => {
-				var path = d + '/f1.txt'
-				var ost = fs.statSync(path)
-				path.chmod(0)
-				var nst = fs.statSync(path)
-				assert.notEqual(ost.mode, nst.mode)
-				path.chmod(ost.mode)
-			})
-			it('removes directory', () => {
-				var f1 = d + '/f1.txt'; f1.rm()
-				var f2 = d + '/f2.txt'; f2.rm()
-				d.rmdir()
-				assert.ok(!fs.existsSync(d), 'directory not removed')
-			})
+			orig.mv(dup)
+			assert.ok(fs.existsSync(dup))
+			assert.ok(!fs.existsSync(orig))
+		})
+		it('removes file', () => {
+			var path = d + '/f4.txt'
+			path.rm();
+			assert.ok(!fs.existsSync(path))
+		})
+		it('reads file', () => {
+			var path = d + '/f1.txt'
+			assert.equal(path.cat(), 'contents of file 1')
+		})
+		it('reads properties', () => {
+			var path = d + '/f1.txt'
+			var st = path.fstat()
+			assert.ok(st instanceof fs.Stats)
+		})
+		it('reads directory', () => {
+			assert.deepEqual(d.ls(), ['d1', 'f1.txt', 'f2.txt'])
+		})
+		it('reads directory - entry objects', () => {
+			var actual = d.ls({withFileTypes: true})
+			assert.ok(actual[0] instanceof fs.Dirent)
+			assert.equal(actual[0].name, 'd1')
+		})
+		it('reads directory - recursive', () => {
+			var actual = d.ls({recurse: true})
+			var expected = ['d1','d1/d2','d1/d2/d3','f1.txt','f2.txt']
+			assert.deepEqual(actual, expected.map(s => d + '/' + s))
+		})
+		it('file existence', () => {
+			var path = d + '/f1.txt'
+			assert.ok(path.fex())
+			path = d + '/x.txt'
+			assert.ok(!path.fex())
+		})
+		it('directory existence', () => {
+			assert.ok(d.fex())
+		})
+		// need to figure out what owner to change to
+		it.skip('change ownership', () => {
+			var path = d + '/f1.txt'
+			var ost = fs.statSync(path)
+			path.chown(1, 1)
+			var nst = fs.statSync(path)
+			assert.notEqual(nst.uid, ost.uid)
+			assert.notEqual(nst.gid, ost.gid)
+			path.chown(ost.uid, ost.gid)
+		})
+		it('change mode', () => {
+			var path = d + '/f1.txt'
+			var ost = fs.statSync(path)
+			path.chmod(0)
+			var nst = fs.statSync(path)
+			assert.notEqual(ost.mode, nst.mode)
+			path.chmod(ost.mode)
+		})
+		it('removes directory - single', () => {
+			var path = d + '/d1/d2/d3'
+			path.rmdir()
+			assert.ok(!fs.existsSync(path), 'directory not removed')
+		})
+		it('removes directory - recursive', () => {
+			d.rmdir({recurse: true})
+			assert.ok(!fs.existsSync(d), 'directory not removed')
 		})
 	})
 })
 
 function rmdir(path) {
-	fs.readdirSync(path).forEach(fn => fs.unlinkSync(path + '/' + fn))
-	fs.rmdirSync(path)
-}
-
-function mockfs(f) {
-	return {
-		existsSync(arg) {
-			return f == arg
-		},
-		chmodSync(arg, mode) {
-			assert.ok(arg == f)
-		},
-		chownSync(arg, uid, gid) {
-			assert.ok(arg == f && uid == 0 && gid == 0)
-		},
-		statSync(arg, opts) {
-			return {test: 'ok'}
-		},
-		readdirSync(arg, opts) {
-			return opts.withFileTypes
-				? {"name":"LICENSE"}
-				: 'x/y/z'.split('/');
-		},
-		mkdirSync(arg, opts) {
-			assert.ok(arg == f)
-		},
-		rmdirSync(arg) {
-			assert.ok(arg == f)
-		},
-		readFileSync(arg, opts) {
-			return 'test-string'
-		},
-		copyFileSync(arg, dst, flags) {
-			assert.ok(arg == f && dst == 'x')
-		},
-		renameSync(arg, dst) {
-			assert.ok(arg == f && dst == 'x')
-		},
-		unlinkSync(arg) {
-			assert.ok(arg == f)
-		}
+	if (fs.existsSync(path)) {
+		var st = fs.statSync(path);
+		if (st.isDirectory())
+			fs.readdirSync(path).forEach(fn => fs.unlinkSync(path + '/' + fn))
 	}
+	
+	fs.rmdirSync(path)
 }
