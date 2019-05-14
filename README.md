@@ -186,6 +186,7 @@ The following prototype extensions are provided by this package:
 
   Parses the given Json string, returning an object
 
+  ### resolve
   ### mkdir / rmdir / ls
   ### fex / chmod / chown / fstat 
   ### cat / tee / cp / mv / rm
@@ -195,6 +196,11 @@ The following prototype extensions are provided by this package:
   pretty much like their bash equivalents
 
   **- Notes -**
+  The `.resolve()` method is equivalent to `require('path').resolve()` and can
+  be used to expand tildes, double-dots, etc. e.g. `'..'.resolve()` yields
+  the full path to the parent directory, whilst `'~/.bashrc`.resolve()` returns
+  the full path to the bash resource file
+  
   The `tee` method is used for writing to files but has two modes, 1) where the
   argument specifies the path, and 2) where the object the method is called on
   serves as the path

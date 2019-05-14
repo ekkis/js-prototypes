@@ -1,3 +1,5 @@
+var path = require('path');
+
 var self = module.exports = {
     fs: require('fs'),
     uc() { 
@@ -88,6 +90,9 @@ var self = module.exports = {
     },
     json() {
         return JSON.parse(this);
+    },
+    resolve() {
+        return path.resolve(this.toString());
     },
     mkdir(opts) {
         self.fs.mkdirSync(this.toString(), opts);

@@ -335,6 +335,10 @@ describe('Strings', () => {
 		})
 		describe('integration tests', () => {
 			var d = '__tst__';
+			it('resolves a path', () => {
+				var path = require('path').resolve('.')
+				assert.equal('.'.resolve(), path) 
+			})
 			it('creates a directory', () => {
 				if (fs.existsSync(d)) rmdir(d)
 				d.mkdir()
