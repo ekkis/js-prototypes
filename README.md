@@ -152,7 +152,7 @@ The following prototype extensions are provided by this package:
   `'eth,eos,btc'.nth(-1)` returns 'btc'.  Though the set of delimiter characters is rather
   broad, you can also specify your own e.g. `'eth-eos-btc'.nth(0, '-')` returns 'eth'
 
-  ### extract regular-expression original = false
+  ### extract regular-expression empty = false
 
   Used to extract values from a string as specified in the regular expression passed.  
   
@@ -163,13 +163,15 @@ The following prototype extensions are provided by this package:
   **return value**
   Ordinarily the function returns an unpacked array i.e. when the array contains a single
   element then that element is returned instead.  If the return value is an empty array,
-  the `original` parameter can cause the function to return the original string.
+  the `empty` parameter can cause the function to return a) when set to `true`, the original
+  string, or b) set to anything else returns what is passed
 
   Below are some examples:
   ```javascript
   // no match
-  'now is the time'.extract(/(hello)/)        // returns []
-  'now is the time'.extract(/(hello)/, true)  // returns 'now is the time'
+  'now is the time'.extract(/(hello)/)                // returns []
+  'now is the time'.extract(/(hello)/, true)          // returns 'now is the time'
+  'now is the time'.extract(/(hello)/, 'awesome')     // returns 'awesome'
   
   // the query below provides multiple capture groups
   'now is the time for all good men'.extract(/now (\w+) the (\w+) for (\w+)/)

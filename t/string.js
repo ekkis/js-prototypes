@@ -275,6 +275,10 @@ describe('Strings', () => {
 			var input = 'test [case]'
 			assert.equal(input.extract(re, true), input)
 		})
+		it('handles mismatch with default', () => {
+			var input = 'test [case]'
+			assert.equal(input.extract(re, 'x'), 'x')
+		})
 		it('supports multiple fields', () => {
 			var re = /(\w+) first (\w+)/
 			var input = 'test a first case'

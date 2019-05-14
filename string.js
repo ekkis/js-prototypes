@@ -69,7 +69,7 @@ var self = module.exports = {
         if (n < 0) n = r.length + n;
         return r[n] || '';
     },
-    extract(re, original = false) {
+    extract(re, empty = false) {
         var m, ret = [];
         if (isRegExpGlobal(re))
             while (m = re.exec(this)) ret = ret.concat(m.slice(1));
@@ -77,9 +77,11 @@ var self = module.exports = {
             m = this.match(re);
             if (m) ret = m.slice(1);
         }
-
-        return ret.length == 0 && original
-            ? this.toString() 
+        return ret.length == 0
+            ? (empty == true 
+                ? this.toString() 
+                : (empty == false ? ret : empty)
+            )
             : ret.length == 1 
             ? ret[0] 
             : ret;
