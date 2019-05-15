@@ -188,8 +188,8 @@ The following prototype extensions are provided by this package:
 
   ### resolve
   ### mkdir / rmdir / ls
-  ### fex / chmod / chown / fstat 
-  ### cat / tee / cp / mv / rm
+  ### fex / chmod / chown / fstat
+  ### cat / tee / cp / mv / rm / symlink
 
   This family of functions provides filesystem functionality on file paths.
   The functions make use of the *Sync* versions in the 'fs' package and behave 
@@ -206,6 +206,9 @@ The following prototype extensions are provided by this package:
   explicit directive is needed i.e. `'/tmp/a'.rmdir()` will fail but
   `'/tmp/a'.rmdir({recurse: true})` succeeds
   
+  Symlinks take the target as a parameter, so `'sym1'.symlink('/tmp/x')` creates
+  a symlink called `sym1` pointing to `/tmp/x`
+
   The `tee` method is used for writing to files but has two modes, 1) where the
   argument specifies the path, and 2) where the object the method is called on
   serves as the path
@@ -227,7 +230,9 @@ The following prototype extensions are provided by this package:
   method.  Options may be passed without supplying a regular expression and vice-versa.
   
   Like `rmdir`, this method also supports an explicit recursion directive, therefore
-  `'/tmp'.ls({recurse: true})` will return the entire tree under the /tmp directory
+  `'/tmp'.ls({recurse: true})` will return the entire tree under the /tmp directory.  The
+  attribute 'symlinks` is also supported such that when set to true recursive listings
+  will follow symlinks
 
   Additionally, Node versions below 10 do not support the `withFileTypes` option but this
   method polyfills so the output is consistent:

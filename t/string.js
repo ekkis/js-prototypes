@@ -325,6 +325,16 @@ describe('Strings', () => {
 			'contents of file 1'.tee(path)
 			assert.ok(fs.existsSync(path))
 		})
+		it('creates a file symlink', () => {
+			var path = d + '/sym1'
+			path.symlink(d + '/f1.txt')
+			assert.ok(fs.existsSync(path))
+		})
+		it('creates a directory symlink', () => {
+			var path = d + '/sym2'
+			path.symlink(d + '/d1')
+			assert.ok(fs.existsSync(path))
+		})
 		it('copies file', () => {
 			var orig = d + '/f1.txt'
 			var dup = d + '/f3.txt'
@@ -357,7 +367,7 @@ describe('Strings', () => {
 			assert.ok(st instanceof fs.Stats)
 		})
 		it('reads directory', () => {
-			assert.deepEqual(d.ls(), ['d1', 'f1.txt', 'f2.txt'])
+			assert.deepEqual(d.ls(), ['d1', 'f1.txt', 'f2.txt', 'sym1', 'sym2'])
 		})
 		it('reads directory - entry objects', () => {
 			var actual = d.ls({withFileTypes: true})
@@ -366,7 +376,20 @@ describe('Strings', () => {
 		})
 		it('reads directory - recursive', () => {
 			var actual = d.ls({recurse: true})
-			var expected = ['d1','d1/d2','d1/d2/d3','f1.txt','f2.txt']
+			var expected = [
+				'd1','d1/d2','d1/d2/d3',
+				'f1.txt','f2.txt',
+				'sym1','sym2'
+			]
+			assert.deepEqual(actual, expected.map(s => d + '/' + s))
+		})
+		it('reads directory - symlinks', () => {
+			var actual = d.ls({followSymlinks: true, recurse: true})
+			var expected = [
+				'd1','d1/d2','d1/d2/d3',
+				'f1.txt','f2.txt',
+				'sym1','sym2','sym2/d2','sym2/d2/d3'
+			]
 			assert.deepEqual(actual, expected.map(s => d + '/' + s))
 		})
 		it('file existence', () => {
@@ -377,6 +400,38 @@ describe('Strings', () => {
 		})
 		it('directory existence', () => {
 			assert.ok(d.fex())
+		})
+		it('stat - regular file', () => {
+			var path = d + '/' + 'f1.txt'
+			var st = path.fstat()
+			assert.ok(st instanceof fs.Stats)
+			assert.ok(st.isFile())
+		})
+		it('stat - directory', () => {
+			var path = d + '/' + 'd1'
+			var st = path.fstat()
+			assert.ok(st instanceof fs.Stats)
+			assert.ok(st.isDirectory())
+		})
+		it('stat - file symlink', () => {
+			var path = d + '/' + 'sym1'
+			var st = path.fstat({symlinks: true})
+			assert.ok(st instanceof fs.Stats)
+			assert.ok(st.isSymbolicLink())
+		})
+		it('stat - directory symlink', () => {
+			var path = d + '/' + 'sym2'
+			var st = path.fstat()
+			assert.ok(st instanceof fs.Stats)
+			assert.ok(st.isDirectory())
+			assert.ok(!st.isSymbolicLink())
+		})
+		it('stat - directory symlink, follow', () => {
+			var path = d + '/' + 'sym2'
+			var st = path.fstat({symlinks: true})
+			assert.ok(st instanceof fs.Stats)
+			assert.ok(st.isSymbolicLink())
+			assert.ok(!st.isDirectory())
 		})
 		// need to figure out what owner to change to
 		it.skip('change ownership', () => {
@@ -409,11 +464,9 @@ describe('Strings', () => {
 })
 
 function rmdir(path) {
-	if (fs.existsSync(path)) {
-		var st = fs.statSync(path);
-		if (st.isDirectory())
-			fs.readdirSync(path).forEach(fn => fs.unlinkSync(path + '/' + fn))
-	}
-	
+	if (!fs.existsSync(path)) return;
+	var st = fs.statSync(path);
+	if (st.isDirectory())
+		fs.readdirSync(path).forEach(fn => fs.unlinkSync(path + '/' + fn))
 	fs.rmdirSync(path)
 }

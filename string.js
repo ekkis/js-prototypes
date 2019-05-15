@@ -161,8 +161,14 @@ var self = module.exports = {
     fex() {
         return self.fs.existsSync(this.toString());
     },
-    fstat(opts) {
-        return self.fs.statSync(this.toString(), opts);
+    fstat(opts = {}) {
+        var path = this.toString()
+        var fn = opts.symlinks ? 'lstat' : 'stat'; 
+        return self.fs[fn + 'Sync'](path, opts);
+    },
+    symlink(target, type) {
+        var path = this.toString();
+        self.fs.symlinkSync(target, path, type);
     }
 }
 
@@ -182,11 +188,20 @@ function swap(cond, a, b) {
 
 function ls(path, re, opts = {}) {
     var ret = self.fs.readdirSync(path, opts);
+    if (!opts.withFileTypes) return ret;
+
     // node v8 does not support withFileTypes so we must emulate it
-    if (opts.withFileTypes && typeof ret[0] == 'string') {
+    if (typeof ret[0] == 'string') {
         ret = ret.map(fn => {
-            var ret = self.fs.statSync(path + '/' + fn)
+            var ret = self.fs.lstatSync(path + '/' + fn)
             if (!ret.name) ret.name = fn;   // node v8 doesn't return the name
+            return ret;
+        })
+    }
+    if (opts.followSymlinks) {
+        ret = ret.map(o => {
+            var ret = self.fs.statSync(path + '/' + o.name);
+            ret.name = o.name;
             return ret;
         })
     }
