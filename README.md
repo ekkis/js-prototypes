@@ -129,21 +129,25 @@ The following prototype extensions are provided by this package:
   if everything should be turned into a string the final parameter may be indicated
   as true
 
-  ### arr [delimiter-character-set = '/|,;.\t\n'] [callback]
+  ### arr [delimiter-character-set] [callback]
 
   Splits the string by the character set specified (which defaults to the set shown
   above) and returns the resulting array.  If an optional callback is supplied, the
   method will iterate through the resulting array, providing each element to the
   callback
 
-  ### splitn [delimiter-character-set = '/|,;.\t\n'] [segments = 2]
+  **Note: the default value for any method that accepts a `delimiter-character-set`
+  is `'/|,;. \t\n'`, which notably breaks by spaces.  In such cases where spaces must
+  be preserved, specify the character set explicitly**
+
+  ### splitn [delimiter-character-set] [segments = 2]
 
   Splits a string into the number of segments specified, for example: `'this/that/these'.splitn()`
   will regenerate `['this', 'that/these']`.  If the number of segments specified is greater
   than those available, the function returns the shorter of the two.  Specifying a single
   segment will return the entire string in an array
 
-  ### nth n delimiter-character-set
+  ### nth n [delimiter-character-set]
 
   Returns the nth value in a string separated by any of the characters in the delimiter
   set e.g. `'eth/eos/btc'.nth(0)` returns 'eth', `'eth eos btc'.nth(1)` returns 'eos', etc.

@@ -178,7 +178,7 @@ function isRegExpGlobal(re) {
 }
 
 function charSet(dc) {
-    if (!dc) dc = '/|,;.\t\n';
+    if (!dc) dc = '/|,;. \t\n';
     return new RegExp('[' + dc + ']+');
 }
 

@@ -255,6 +255,7 @@ describe('Strings', () => {
 			assert.equal('ett.två.tre'.nth(0), 'ett', 'Dots failed')
 			assert.equal('ett\ttvå\ttre'.nth(0), 'ett', 'Tabs failed')
 			assert.equal('ett\ntvå\ntre'.nth(0), 'ett', 'Newlines failed')
+			assert.equal('ett två tre'.nth(0), 'ett', 'Spaces failed')
 		})
 		it('nth - delimiter options', () => {
 			assert.equal('ett#två#tre'.nth(0, '#'), 'ett')
