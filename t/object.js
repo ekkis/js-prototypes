@@ -5,6 +5,44 @@ describe('Objects', () => {
 	before(() => {
 		jsp.install()
 	})
+	describe('case functions', () => {
+		it('uppercases', () => {
+			var actual = {a: 'x', b: 'y'}
+			var expected = {a: 'X', b: 'Y'}
+			actual.uc()
+			assert.deepEqual(actual, expected)
+		})
+		it('uppercases - limited, array', () => {
+			var actual = {a: 'x', b: 'y', c: 'z'}
+			var expected = {a: 'X', b: 'y', c: 'Z'}
+			actual.uc(['a', 'c'])
+			assert.deepEqual(actual, expected)
+		})
+		it('uppercases - limited, string', () => {
+			var actual = {a: 'x', b: 'y', c: 'z'}
+			var expected = {a: 'X', b: 'y', c: 'Z'}
+			actual.uc('a/c')
+			assert.deepEqual(actual, expected)
+		})
+		it('lowercases', () => {
+			var actual = {a: 'X', b: 'Y'}
+			var expected = {a: 'x', b: 'y'}
+			actual.lc()
+			assert.deepEqual(actual, expected)
+		})
+		it('lowercases - limited, array', () => {
+			var actual = {a: 'X', b: 'Y', c: 'Z'}
+			var expected = {a: 'x', b: 'Y', c: 'z'}
+			actual.lc(['a', 'c'])
+			assert.deepEqual(actual, expected)
+		})
+		it('lowercases - limited, string', () => {
+			var actual = {a: 'X', b: 'Y', c: 'Z'}
+			var expected = {a: 'x', b: 'Y', c: 'z'}
+			actual.lc('a/c')
+			assert.deepEqual(actual, expected)
+		})
+	})
 	describe('keys', () => {
 		it('Base case', () => {
 			var o = {a: 1, b: 2}

@@ -1,4 +1,14 @@
 module.exports = {
+    uc(keys = []) {
+        if (keys.isStr) keys = keys.arr();
+        if (keys.length == 0) keys = this.keys()
+        keys.forEach(k => this[k] = this[k].uc());
+    },
+    lc(keys = []) {
+        if (keys.isStr) keys = keys.arr();
+        if (keys.length == 0) keys = this.keys()
+        keys.forEach(k => this[k] = this[k].lc());
+    },
     keys() {
         return Object.keys(this);
     },

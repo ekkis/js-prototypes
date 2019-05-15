@@ -324,6 +324,12 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   Returns a boolean value indicating whether the object contains any visible members (this excludes
   functions and other attributes created with `enumerable: false`)
   
+  ### uc / lc [keys]
+
+  Uppercases or lowercases the values in an object.  If no arguments are passed, all keys in the
+  object are operated upon.  Alternatively the caller may pass an array of keys or a string to be
+  converted into an array using the `String.arr()` method
+  
   ### map fn
   
   Returns an object transformed according to the function passed
