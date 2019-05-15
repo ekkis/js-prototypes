@@ -184,7 +184,11 @@ function ls(path, re, opts = {}) {
     var ret = self.fs.readdirSync(path, opts);
     // node v8 does not support withFileTypes so we must emulate it
     if (opts.withFileTypes && typeof ret[0] == 'string') {
-        ret = ret.map(fn => self.fs.statSync(path + '/' + fn))
+        ret = ret.map(fn => {
+            var ret = self.fs.statSync(path + '/' + fn)
+            if (!ret.name) ret.name = fn;   // node v8 doesn't return the name
+            return ret;
+        })
     }
     return ret;
 }
