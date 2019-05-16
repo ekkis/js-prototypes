@@ -14,12 +14,28 @@ var self = module.exports = {
             .map(s => s.length > 1 ? (s.charAt(0).toUpperCase() + s.substr(1)) : s)
             .join('');
     },
+    tr(scs, rcs) {
+        var ret = '';
+        for (var i = 0; i < this.length; i++) {
+            var j = scs.indexOf(this[i]);
+            ret +=  j > -1 ? rcs[j] : this[i];
+        }
+        return ret;
+    },
     sprintf(o) {
         var s = this.toString();
         if (typeof o != 'object') return s;
         for (var k in o)
             s = s.replace(new RegExp('%{' + k + '}', 'g'), o[k]);
         return s;
+    },
+    replaceall(sstr, rstr) {
+        return this.split(sstr).join(rstr);
+    },
+    chomp(re = '\n') {
+        if (re instanceof RegExp) re = re.toString().replace(/\//g, '');
+        else re = re.replaceall('.', '\\.')
+        return this.replace(new RegExp(re + '$'), '');
     },
     unindent() {
         var level = this.match(/^\n?([ \t]*)/);

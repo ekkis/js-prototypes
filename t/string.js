@@ -7,6 +7,13 @@ describe('Strings', () => {
 	before(() => {
 		jsp.install('string')
 	})
+	describe('translate', () => {
+		it('Base case', () => {
+			var input = "john's response: sure!"
+			var expected = "john;s rEsponsE# surE%"
+			assert.equal(input.tr("':!e", ";#%E"), expected)
+		})
+	})
 	describe('sprintf', () => {
 		it('Base case', () => {
 			var actual = 'math: %{a} + %{b}'.sprintf({a: 1, b: 2})
@@ -23,6 +30,39 @@ describe('Strings', () => {
 		it('Multiple instances', () => {
 			var actual = 'math: %{a} + %{a}'.sprintf({a: 1})
 			assert.equal(actual, 'math: 1 + 1')
+		})
+	})
+	describe('chomp', () => {
+		it('Niladic', () => {
+			var input = 'testing\n'
+			var expected = 'testing'
+			assert.equal(input.chomp(), expected)
+		})
+		it('String argument', () => {
+			var input = 'testing'
+			var expected = 'testin'
+			assert.equal(input.chomp('g'), expected)
+		})
+		it('Dot support', () => {
+			assert.equal('testing.js'.chomp('.js'), 'testing', 'Chomp should succeed')
+			assert.equal('testing_js'.chomp('.js'), 'testing_js', 'Chomp should fail')
+		})
+		it('Regular expression', () => {
+			var input = 'testing.js'
+			var expected = 'testing'
+			assert.equal(input.chomp(/\.js/), expected)
+		})
+		it('Explicit terminal', () => {
+			var input = 'testing.js'
+			var expected = 'testing'
+			assert.equal(input.chomp(/\.js$/), expected)
+		})
+	})
+	describe('replaceall', () => {
+		it('Base case', () => {
+			var input = 'me and you and him and her'
+			var expected = 'me or you or him or her'
+			assert.equal(input.replaceall('and', 'or'), expected)
 		})
 	})
 	describe('unindent', () => {

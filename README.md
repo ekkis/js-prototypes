@@ -44,6 +44,22 @@ The following prototype extensions are provided by this package:
   and references are made with the `%{elem}` syntax
   e.g. `"Call my %{relative}".sprintf({relative: 'mother'})`
   
+  ### chomp [regular-expression | string = '\n']
+
+  Like its perl cousin, removes the string or regular expression from the end of the string.
+  If left unspecified, defaults to a newline.  The function returns the new string
+
+  ### tr <search-character-set> <replacement-character-set>
+
+  Equivalent to the *bash* translate function, replaces characters in the search character set
+  with those in the replacement character set.  The sets must be of equal length as the replacements
+  are one-for-one e.g. `'double fast :)'.tr('a) ', 'i(_')` yields `'double_fist :('`
+
+  ### replaceall search-str replace-str
+
+  Does what `.replace()` should have done, allows for replacing more than one instance of a string
+  with another
+  
   ### unindent
 
   Useful for adjusting multi-line strings that, in order to conform to code indention, include
@@ -329,7 +345,7 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   Uppercases or lowercases the values in an object.  If no arguments are passed, all keys in the
   object are operated upon.  Alternatively the caller may pass an array of keys or a string to be
   converted into an array using the `String.arr()` method
-  
+
   ### map fn
   
   Returns an object transformed according to the function passed
