@@ -6,9 +6,10 @@ var self = module.exports = {
         string: require('./string'),
         array: require('./array'),
         object: require('./object'),
+        error: require('./error')
     },
     force: false,
-    groups: ['array', 'string', 'object'],
+    groups: ['array', 'string', 'object', 'error'],
     install(...r) {
         if (r.length == 0) r = this.groups;
         iterate(this.ls(...r), (o, fn) => {

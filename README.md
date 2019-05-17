@@ -433,6 +433,22 @@ this module creates the methods as non-enumerable, which will be perfectly safe
 
    Converts the object to a Json string
 
+## Errors
+
+Errors are not easily examinable, thus attempting to create a Json string from one will fail.
+By installing the error module it is possible to extract the object within an error:
+```js
+const jsp = require('js-prototype-lib')
+jsp.install('error')
+try {
+   throw new Error('test')
+}
+catch(e) {
+    console.log(JSON.stringify(e))        // produces '{}', but
+    console.log(JSON.stringify(e.obj()))  // generates {"message": "error", "stack": "Error: test\n at Context.it..."}
+}
+```
+
 ## Common
 
 The objects *Array*, *String* *Object* and *Number* have also been marked up with properties
