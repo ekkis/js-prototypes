@@ -106,7 +106,8 @@ var self = module.exports = {
             : ret;
     },
     json() {
-        return JSON.parse(this);
+        var s = this.trim();
+        return s ? JSON.parse(s) : {};
     },
     resolve() {
         return jspath.resolve(this.toString());

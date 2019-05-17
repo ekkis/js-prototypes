@@ -336,6 +336,12 @@ describe('Strings', () => {
 		it('base case', () => {
 			assert.deepEqual('{"a":"x", "b":"y"}'.json(), {a: "x", b: "y"})
 		})
+		it('handles empty strings', () => {
+			assert.deepEqual(''.json(), {})
+		})
+		it('handles whitespace', () => {
+			assert.deepEqual(' \t '.json(), {})
+		})
 	})
 	describe('filesystem functions', () => {
 		var d = os.tmpdir() + '/__tst__';

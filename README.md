@@ -59,7 +59,7 @@ The following prototype extensions are provided by this package:
 
   Does what `.replace()` should have done, allows for replacing more than one instance of a string
   with another
-  
+
   ### unindent
 
   Useful for adjusting multi-line strings that, in order to conform to code indention, include
@@ -204,7 +204,8 @@ The following prototype extensions are provided by this package:
 
   ## json
 
-  Parses the given Json string, returning an object
+  Parses the given Json string, returning an object.  Empty or whitespace strings
+  return an empty object instead of issuing an exception
 
   ### resolve
   ### mkdir / rmdir / ls
