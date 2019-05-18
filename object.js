@@ -60,11 +60,13 @@ module.exports = {
         })
     },
     rm(...ls) {
+        if (ls.length == 1) ls = ls[0].arr();
         ls.forEach(k => delete this[k]);
         return this;
     },
     rmp(...ls) {
         var ret = {}.concat(this);
+        if (ls.length == 1) ls = ls[0].arr();
         ls.forEach(k => delete ret[k]);
         return ret;
     },

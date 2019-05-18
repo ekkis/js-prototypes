@@ -179,6 +179,12 @@ describe('Objects', () => {
 			assert.deepEqual(input.rm(...opts), expected, 'rm failed')
 			assert.deepEqual(input.rmp(...opts), expected, 'rmp failed')
 		})
+		it('Accepts string array', () => {
+			var input = {a:1, b:2, c:3}
+			var expected = {b:2}
+			assert.deepEqual(input.rm('a/c'), expected, 'rm failed')
+			assert.deepEqual(input.rmp('a/c'), expected, 'rmp failed')
+		})
 		it('Returnless', () => {
 			var actual = {a:1, b:2}
 			actual.rmp('a')

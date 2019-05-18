@@ -381,7 +381,7 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   console.log(o)  // but leaves orginal alone: {a:1, b:2}
   
   // but mv is destructive
-  o.mv({a: 'c})
+  o.mv({a: 'c'})
   console.log(o)  // produces {c:1, b:2}
   ```
 
@@ -389,7 +389,8 @@ this module creates the methods as non-enumerable, which will be perfectly safe
 
   Like mv/p, this method comes in destructive and non-destructive modes.  The method
   accepts a list or array of keys to remove from the object e.g. `{a:1, b:2, c:3}.rm('a', 'b')`
-  and `var ls = ['a','b']; {a:1, b:2, c:3}.rm(...ls)` both produce `{c:3}`
+  and `var ls = ['a','b']; {a:1, b:2, c:3}.rm(...ls)` both produce `{c:3}`.  I also
+  accepts a string-array: `{a:1, b:2, c:3}.rm('a/b')`
 
   Please note that to pass an array, spread notation is needed
 
