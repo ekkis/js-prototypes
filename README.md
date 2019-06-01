@@ -355,11 +355,26 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   
   Iterates through the properties of an object, performing a caller-defined function
 
-  ### concat o...
+  ### concat / assign o...
 
-  Concatenates the elements of objects passed-in as as parameters with the elements
-  in the object.  Returns the base object.  Use like this: `var o = {a:1}; o.concat({b:1}, {c:1})`
-  or, of course: `var o = {}.concat({a:1})`
+  These functions behave similarly.  The merge the elements in the parameter list with
+  those of the referenced object.  They differ in that `assign` modifies the reference
+  object whereas `concat` does not.  Both functions return the result.  Use like this:
+  ```js
+  var o = {a:1}
+
+  // concat is non destructive
+  console.log(o.concat({b:1}, {c:1}))   // {a:1, b:1, c:1}
+  console.log(o)                        // {a:1}
+
+  // whereas assign modifies the reference object
+  console.log(o.assign({d:1}))          // {a:1, d:1}
+  console.log(o)                        // {a:1, d:1}
+
+  // so these two calls are equivalent
+  console.log(o.concat({e:1}))
+  console.log({}.assign(o, {e:1}))
+  ```
 
   ### mv/p descriptor
 

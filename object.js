@@ -41,8 +41,11 @@ module.exports = {
         }
         return this.map(r, []);
     },
-    concat(...ls) {
+    assign(...ls) {
         return Object.assign(this, ...ls);
+    },
+    concat(...ls) {
+        return Object.assign({}, this, ...ls);
     },
     mv(o) {
         o.map((self, k, acc) => {

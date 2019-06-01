@@ -118,13 +118,48 @@ describe('Objects', () => {
 	})
 	describe('concat', () => {
 		it('Base case', () => {
-			var expected = {a:1, b:2}
-			var actual = {}.concat({a:1}, {b:2})
+			var actual = {a:1}.concat({b:2}, {c:3})
+			var expected = {a:1, b:2, c:3}
 			assert.deepEqual(actual, expected)
 		})
 		it('Overwrites', () => {
 			var actual = {a:1, b:2}.concat({a:3})
 			var expected = {a:3, b:2}
+			assert.deepEqual(actual, expected)
+		})
+		it('Does not clobber', () => {
+			var actual = {a:1, b:2}
+			actual.concat({c:3})
+			var expected = {a:1, b:2}
+			assert.deepEqual(actual, expected)
+		})
+		it('Multiple arguments', () => {
+			var actual = {a:1}.concat({b:2}, {c:3})
+			var expected = {a:1, b:2, c:3}
+			assert.deepEqual(actual, expected)
+		})
+	})
+	describe('assign', () => {
+		it('Base case', () => {
+			var actual = {a:1}.assign({b:2})
+			var expected = {a:1, b:2}
+			assert.deepEqual(actual, expected)
+		})
+		it('Overwrites', () => {
+			var actual = {a:1, b:2}.assign({a:3})
+			var expected = {a:3, b:2}
+			assert.deepEqual(actual, expected)
+		})
+		it('Clobbers', () => {
+			var actual = {a:1, b:2}
+			actual.assign({c:3})
+			var expected = {a:1, b:2, c:3}
+			assert.deepEqual(actual, expected)
+		})
+		it('Multiple arguments', () => {
+			var actual = {a:1}
+			actual.assign({b:2}, {c:3})
+			var expected = {a:1, b:2, c:3}
 			assert.deepEqual(actual, expected)
 		})
 	})

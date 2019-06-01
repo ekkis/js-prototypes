@@ -7,16 +7,16 @@ describe('Type properties', () => {
 	})
 	describe('Numbers', () => {
 		var x = 0;
-		it('isNbr', () => {
+		it('is a number', () => {
 			assert.ok(x.isNbr)
 		})
-		it('isStr', () => {
+		it('is a string', () => {
 			assert.ok(!x.isStr)
 		})
-		it('isArr', () => {
+		it('is an array', () => {
 			assert.ok(!x.isArr)
 		})
-		it('isObj', () => {
+		it('is an object', () => {
 			assert.ok(!x.isObj)
 		})
 		it('typeof', () => {
@@ -25,16 +25,16 @@ describe('Type properties', () => {
 	})
 	describe('Strings', () => {
 		var x = ''
-		it('isNbr', () => {
+		it('is a number', () => {
 			assert.ok(!x.isNbr)
 		})
-		it('isStr', () => {
+		it('is a string', () => {
 			assert.ok(x.isStr)
 		})
-		it('isArr', () => {
+		it('is an array', () => {
 			assert.ok(!x.isArr)
 		})
-		it('isObj', () => {
+		it('is an object', () => {
 			assert.ok(!x.isObj)
 		})
 		it('typeof', () => {
@@ -43,16 +43,16 @@ describe('Type properties', () => {
 	})
 	describe('Arrays', () => {
 		var x = []
-		it('isNbr', () => {
+		it('is a number', () => {
 			assert.ok(!x.isNbr)
 		})
-		it('isStr', () => {
+		it('is a string', () => {
 			assert.ok(!x.isStr)
 		})
-		it('isArr', () => {
+		it('is an array', () => {
 			assert.ok(x.isArr)
 		})
-		it('isObj', () => {
+		it('is an object', () => {
 			assert.ok(!x.isObj)
 		})
 		it('typeof', () => {
@@ -61,16 +61,16 @@ describe('Type properties', () => {
 	})
 	describe('Objects', () => {
 		var x = {}
-		it('isNbr', () => {
+		it('is a number', () => {
 			assert.ok(!x.isNbr)
 		})
-		it('isStr', () => {
+		it('is a string', () => {
 			assert.ok(!x.isStr)
 		})
-		it('isArr', () => {
+		it('is an array', () => {
 			assert.ok(!x.isArr)
 		})
-		it('isObj', () => {
+		it('is an object', () => {
 			assert.ok(x.isObj)
 		})
 		it('typeof', () => {
