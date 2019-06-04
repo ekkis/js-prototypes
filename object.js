@@ -1,4 +1,7 @@
 module.exports = {
+    isEmpty() {
+        return this.keys().length == 0;
+    },
     uc(keys = []) {
         if (keys.isStr) keys = keys.arr();
         if (keys.length == 0) keys = this.keys()
@@ -15,9 +18,6 @@ module.exports = {
     vals(fn) {
         if (!fn) return this.keys().map(k => this[k]);
         this.keys().forEach(k => fn(this[k]));
-    },
-    isEmpty() {
-        return this.keys().length == 0;
     },
     map(fn, acc = {}) {
         var r = (acc, k) => (fn(this, k, acc), acc);

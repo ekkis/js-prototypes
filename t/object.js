@@ -5,6 +5,14 @@ describe('Objects', () => {
 	before(() => {
 		jsp.install()
 	})
+	describe('isEmpty', () => {
+		it('Has no attributes', () => {
+			assert.ok({}.isEmpty())
+		})            
+		it('Has attributes', () => {
+			assert.ok(!{a: 1, b: 2}.isEmpty())
+		})            
+	})
 	describe('case functions', () => {
 		it('uppercases', () => {
 			var actual = {a: 'x', b: 'y'}
@@ -64,14 +72,6 @@ describe('Objects', () => {
 				n++;
 			})
 			assert.equal(n, 2, 'Number of checks failed')
-		})            
-	})
-	describe('isEmpty', () => {
-		it('Has no attributes', () => {
-			assert.ok({}.isEmpty())
-		})            
-		it('Has attributes', () => {
-			assert.ok(!{a: 1, b: 2}.isEmpty())
 		})            
 	})
 	describe('map', () => {
