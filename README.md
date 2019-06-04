@@ -321,6 +321,11 @@ Object prototypes are typically problematic for packages that are badly written 
 `for (var i in o)` without calling `.hasOwnProperty()`), and there are many of those, therefore 
 this module creates the methods as non-enumerable, which will be perfectly safe
 
+  ### isEmpty
+
+  Returns a boolean value indicating whether the object contains any visible members (this excludes
+  functions and other attributes created with `enumerable: false`)
+  
   ### keys
   
   Equivalent to `Object.keys()`
@@ -332,15 +337,19 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   and the second of which executes a callback function on each of the values.  The callback receives
   a sole argument consisting of the value e.g.
   ```js
-  {a: 1, b: 2}.vals()                   // returns [1,2]
-  {a: 1}.vals(v => { console.log(v) })  // prints 1
+  {a:1, b:2}.vals()                     // returns [1,2]
+  {a:1}.vals(v => { console.log(v) })   // prints 1
   ```
 
-  ### isEmpty
+  ### slice keys
 
-  Returns a boolean value indicating whether the object contains any visible members (this excludes
-  functions and other attributes created with `enumerable: false`)
-  
+  Returns a new object containing only the properties specified in the base object.  The key list may
+  be provided as an array or a string-array
+  ```js
+  {a:1, b:1, c:1}.slice(['a', 'c'])     // returns {a:1, c:1}
+  {a:1, b:1, c:1}.slice('a/c')          // returns {a:1, c:1}
+  ```
+
   ### uc / lc [keys]
 
   Uppercases or lowercases the values in an object.  If no arguments are passed, all keys in the

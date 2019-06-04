@@ -19,6 +19,14 @@ module.exports = {
         if (!fn) return this.keys().map(k => this[k]);
         this.keys().forEach(k => fn(this[k]));
     },
+    slice(keys) {
+        if (keys.isStr) keys = keys.arr();
+        var r = (acc, k) => {
+            if (k in this) acc[k] = this[k];
+            return acc;
+        }
+        return keys.reduce(r, {});
+    },
     map(fn, acc = {}) {
         var r = (acc, k) => (fn(this, k, acc), acc);
         return this.keys().reduce(r, acc);

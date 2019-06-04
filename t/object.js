@@ -74,6 +74,38 @@ describe('Objects', () => {
 			assert.equal(n, 2, 'Number of checks failed')
 		})            
 	})
+	describe('slice', () => {
+		it('Base case', () => {
+			var input = {a:1, b:1, c:1, d:1}
+			var actual = input.slice(['a', 'd'])
+			var expected = {a:1, d:1}
+			assert.deepEqual(actual, expected)
+		})
+		it('String-array keys', () => {
+			var input = {a:1, b:1, c:1, d:1}
+			var actual = input.slice('a/d')
+			var expected = {a:1, d:1}
+			assert.deepEqual(actual, expected)
+		})
+		it('Empty key list', () => {
+			var input = {a:1, b:1, c:1, d:1}
+			var actual = input.slice([])
+			var expected = {}
+			assert.deepEqual(actual, expected)
+		})
+		it('Non-existent keys', () => {
+			var input = {a:1, b:1, c:1, d:1}
+			var actual = input.slice('a/e')
+			var expected = {a:1}
+			assert.deepEqual(actual, expected)
+		})
+		it('Empty object', () => {
+			var input = {}
+			var actual = input.slice('a/e')
+			var expected = {}
+			assert.deepEqual(actual, expected)
+		})
+	})
 	describe('map', () => {
 		it('Base case', () => {
 			var r = (o, k, acc) => { acc[k + '_'] = o[k] + 1 }
