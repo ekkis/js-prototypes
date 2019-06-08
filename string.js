@@ -1,3 +1,4 @@
+var os = require('os');
 var jspath = require('path');
 var flat = require('./array').flat
 
@@ -110,7 +111,8 @@ var self = module.exports = {
         return s ? JSON.parse(s) : {};
     },
     resolve() {
-        return jspath.resolve(this.toString());
+        var s = this.toString().replace(/^~/, os.homedir());
+        return jspath.resolve(s);
     },
     mkdir(opts) {
         // var path = this.toString();
@@ -123,7 +125,7 @@ var self = module.exports = {
         }
     },
     rmdir(opts = {}) {
-        var path = this.toString();
+        var path = this.resolve();
         if (opts.recurse) path.ls({recurse: true, withFileTypes: true})
             .sort((a,b) => a.name.length < b.name.length ? 1 : -1)
             .forEach(o => {
@@ -133,7 +135,7 @@ var self = module.exports = {
         self.fs.rmdirSync(path);
     },
     ls(re, opts = {}) {
-        var path = this.toString();
+        var path = this.resolve();
         if (re) {
             var rex = re instanceof RegExp;
             if (!rex) { opts = re; re = undefined; }
@@ -150,41 +152,41 @@ var self = module.exports = {
         return ret;
     },
     cat(opts = 'utf8') {
-        return self.fs.readFileSync(this.toString(), opts);
+        return self.fs.readFileSync(this.resolve(), opts);
     },
     tee(s, opts = {}) {
         var argIsPath = 'argIsPath' in opts
             ? opts.argIsPath 
             : s.indexOf('/') > -1
             ;
-        var [path, data] = swap(!argIsPath, s, this.toString());
+        var [path, data] = swap(!argIsPath, s, this.resolve());
         self.fs.writeFileSync(path, data, opts);
     },
     cp(dst, flags) {
-        self.fs.copyFileSync(this.toString(), dst, flags);
+        self.fs.copyFileSync(this.resolve(), dst, flags);
     },
     mv(dst) {
-        self.fs.renameSync(this.toString(), dst);
+        self.fs.renameSync(this.resolve(), dst);
     },
     rm() {
-        self.fs.unlinkSync(this.toString());
+        self.fs.unlinkSync(this.resolve());
     },
     chmod(mode) {
-        return self.fs.chmodSync(this.toString(), mode);
+        return self.fs.chmodSync(this.resolve(), mode);
     },
     chown(uid, gid) {
-        self.fs.chownSync(this.toString(), uid, gid);
+        self.fs.chownSync(this.resolve(), uid, gid);
     },
     fex() {
-        return self.fs.existsSync(this.toString());
+        return self.fs.existsSync(this.resolve());
     },
     fstat(opts = {}) {
-        var path = this.toString()
+        var path = this.resolve()
         var fn = opts.symlinks ? 'lstat' : 'stat'; 
         return self.fs[fn + 'Sync'](path, opts);
     },
     symlink(target, type) {
-        var path = this.toString();
+        var path = this.resolve();
         self.fs.symlinkSync(target, path, type);
     }
 }

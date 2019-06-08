@@ -345,9 +345,13 @@ describe('Strings', () => {
 	})
 	describe('filesystem functions', () => {
 		var d = os.tmpdir() + '/__tst__';
-		it('resolves a path', () => {
+		it('resolves dots', () => {
 			var path = require('path').resolve('.')
 			assert.equal('.'.resolve(), path) 
+		})
+		it('resolves tildes', () => {
+			var path = os.homedir() + '/tst'
+			assert.equal('~/tst'.resolve(), path) 
 		})
 		it('creates a directory', () => {
 			if (fs.existsSync(d)) rmdir(d)

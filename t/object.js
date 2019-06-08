@@ -319,5 +319,22 @@ describe('Objects', () => {
 		it('Base case', () => {
 			assert.deepEqual({a:"x", b:"y"}.json(), '{"a":"x","b":"y"}')
 		})
+		it('Breaks on recursion', () => {
+			var o = {a:1}
+			o.b = o
+			try {
+				o.json(); throw new Error('Should have issued exception')
+			}
+			catch(e) {
+				if (e.message == 'Converting circular structure to JSON')
+					assert.ok('fails as expected')
+				else throw e
+			}
+		})
+		it('Safe on recursion', () => {
+			var o = {a:1}
+			o.b = o
+			assert.equal(o.json(true), '{"a":1}')
+		})
 	})
 })

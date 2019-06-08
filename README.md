@@ -217,10 +217,11 @@ The following prototype extensions are provided by this package:
   pretty much like their bash equivalents
 
   **- Notes -**
-  The `.resolve()` method is equivalent to `require('path').resolve()` and can
-  be used to expand tildes, double-dots, etc. e.g. `'..'.resolve()` yields
-  the full path to the parent directory, whilst `'~/.bashrc`.resolve()` returns
-  the full path to the bash resource file
+  The `.resolve()` method is more-or-less equivalent to `require('path').resolve()` 
+  and can be used to expand double-dots, relative paths, etc. e.g. `'..'.resolve()` 
+  yields the full path to the parent directory.  However, this method also resolves
+  tildes, which are defined as equivalent to the return of `os.homedir()` -- thus
+  `'~/.bashrc`.resolve()` returns the full path to the bash resource file
   
   Both `mkdir` and `rmdir` both recurse e.g. `'/tmp/a/b/c/d'.mkdir()` creates
   each component in the path as needed, but in the case of the latter an 
@@ -454,9 +455,12 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   console.log(o.getpath('a.b.c')) // outputs 1
   ```
 
-  ### json
+  ### json [safe]
 
-   Converts the object to a Json string
+   Converts the object to a Json string.  If the `safe` switch is used, the method will
+   safely handle objects with circular references that normally cannot be serialised and
+   issue an exception.  Circularity is managed by removing the offending keys.  Unsafe calls
+   are made by default to avoid the burden of additional processing
 
 ## Errors
 
