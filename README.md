@@ -365,11 +365,12 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   
   Iterates through the properties of an object, performing a caller-defined function
 
-  ### concat / assign o...
+  ### concat / assign / def o...
 
-  These functions behave similarly.  The merge the elements in the parameter list with
+  These functions behave similarly.  They merge the elements in the parameter list with
   those of the referenced object.  They differ in that `assign` modifies the reference
-  object whereas `concat` does not.  Both functions return the result.  Use like this:
+  object whereas `concat` does not.  `def` is used to supply defaults and does not modify
+  the underlying object.  These functions all return the result.  Use like this:
   ```js
   var o = {a:1}
 
@@ -384,6 +385,10 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   // so these two calls are equivalent
   console.log(o.concat({e:1}))
   console.log({}.assign(o, {e:1}))
+
+  // supply defaults
+  console.log(o.def({a:2}))             // {a:1}
+  console.log(o.def({b:1}))             // {a:1, b:1}
   ```
 
   ### mv/p descriptor

@@ -195,6 +195,18 @@ describe('Objects', () => {
 			assert.deepEqual(actual, expected)
 		})
 	})
+	describe('defaults', () => {
+		it('Key present', () => {
+			var actual = {a:1}.def({a:2})
+			var expected = {a:1}
+			assert.deepEqual(actual, expected)
+		})
+		it('Key missing', () => {
+			var actual = {a:1}.def({b:1})
+			var expected = {a:1, b:1}
+			assert.deepEqual(actual, expected)
+		})
+	})
 	describe('mv/p', () => {
 		it('Renames', () => {
 			var input = {a:1, b:2}

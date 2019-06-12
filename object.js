@@ -55,6 +55,9 @@ module.exports = {
     concat(...ls) {
         return Object.assign({}, this, ...ls);
     },
+    def(...ls) {
+        return Object.assign({}, ...ls, this);
+    },
     mv(o) {
         o.map((self, k, acc) => {
             if (o[k]) this[o[k]] = this[k];
