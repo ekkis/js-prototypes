@@ -424,16 +424,20 @@ this module creates the methods as non-enumerable, which will be perfectly safe
 
   Please note that to pass an array, spread notation is needed
 
-  ### keyval key = 'k', val = 'v'
-  ### keyval {ks = '=', rs = '\n'}
+  ### keyval names = ['k', 'v']
+  ### keyval ks = '=', rs = '\n'
 
-  Converts an object into a key/value array where each array entry is an object with two
-  attributes, one called 'k' (or whatever is supplied to the function) containing the key
-  name, and the other 'v' for the value.  Cf. `[].keyval()`
-
-  The method has a second signature that produces a string instead of an array.  Passing
-  a single object as a parameter, containing the keys `ks` and `rs` for key and record 
-  separators (defaulted as shown) produces a string with the object values
+  Converts an object into key/value pairs returned as either a string or an array,
+  depending on the type of the argument passed
+  
+  When supplying an array the first element should contain the key names used in the
+  objects returned (defaults to 'k') and the second, the value names (defaults to 'v') such
+  that `{a:1,b:1}.keyval(['key', 'val'])` returns `[{key: 'a', val: '1'}, {key: 'b', val: '1'}]`
+  
+  In the second form a string is generated separating attributes by the given key and record
+  separator strings such that `{a:1,b:1}.keyval('=', ';')` returns `'a=1;b=1'`
+  
+  Cf. `[].keyval()`
 
   ### notIn o
 

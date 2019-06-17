@@ -115,9 +115,21 @@ describe('Objects', () => {
 		})            
 	})
 	describe('keyval', () => {
-		it('Base case', () => {
+		it('String signature - defaults', () => {
 			var o = {a: 1, b: 2, c: 3}
 			var actual = o.keyval()
+			var expected = 'a=1\nb=2\nc=3'
+			assert.equal(actual, expected)
+		})
+		it('String signature - specific', () => {
+			var o = {a: 1, b: 2, c: 3}
+			var actual = o.keyval(':', ';')
+			var expected = 'a:1;b:2;c:3'
+			assert.equal(actual, expected)
+		})
+		it('Array signature - defaults', () => {
+			var o = {a: 1, b: 2, c: 3}
+			var actual = o.keyval([])
 			var expected = [
 				{k: 'a', v: 1}, 
 				{k: 'b', v: 2}, 
@@ -125,9 +137,9 @@ describe('Objects', () => {
 			]
 			assert.deepEqual(actual, expected)
 		})            
-		it('Named fields', () => {
+		it('Array signature - Named fields', () => {
 			var o = {a: 1, b: 2, c: 3}
-			var actual = o.keyval('key', 'val')
+			var actual = o.keyval(['key', 'val'])
 			var expected = [
 				{key: 'a', val: 1}, 
 				{key: 'b', val: 2}, 
@@ -135,18 +147,6 @@ describe('Objects', () => {
 			]
 			assert.deepEqual(actual, expected)
 		})            
-		it('String signature - defaults', () => {
-			var o = {a: 1, b: 2, c: 3}
-			var actual = o.keyval({})
-			var expected = 'a=1\nb=2\nc=3'
-			assert.equal(actual, expected)
-		})
-		it('String signature - specific', () => {
-			var o = {a: 1, b: 2, c: 3}
-			var actual = o.keyval({ks: ':', rs: ';'})
-			var expected = 'a:1;b:2;c:3'
-			assert.equal(actual, expected)
-		})
 	})
 	describe('concat', () => {
 		it('Base case', () => {

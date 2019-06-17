@@ -34,20 +34,22 @@ module.exports = {
     each(fn) {
         this.keys().forEach(k => fn(k, this))  
     },
-    keyval(key = 'k', val = 'v') {
-        if (key.isObj) {
-            var opts = {ks: '=', rs: '\n'}.concat(key);
+    keyval(ks = '=', rs = '\n') {
+        if (typeof ks == 'string') {
             var r = (o, k, acc) => {
-                acc.push(k + opts.ks + o[k]);
+                acc.push(k + ks + o[k]);
                 return acc;
             }
-            return this.map(r, []).join(opts.rs);
+            return this.map(r, []).join(rs);
         }
-        var r = (o, k, acc) => {
-            acc.push({[key]: k, [val]: o[k]});
-            return acc;
+        else if (Array.isArray(ks)) {
+            var [key, val] = ks;
+            var r = (o, k, acc) => {
+                acc.push({[key || 'k']: k, [val || 'v']: o[k]});
+                return acc;
+            }
+            return this.map(r, []);    
         }
-        return this.map(r, []);
     },
     assign(...ls) {
         return Object.assign(this, ...ls);
