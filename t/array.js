@@ -138,6 +138,25 @@ describe('Arrays', () => {
 			assert.deepEqual(actual, expected)
 		})
 	})
+	describe('index of object', () => {
+		it('Base case', () => {
+			var r = [{nm: 'a'}, {nm: 'b'}, {nm: 'c'}, {nm: 'd'}]
+			assert.equal(r.indexOfObj(o => o.nm == 'b'), 1)
+		})
+		it('Non-existent', () => {
+			var r = [{nm: 'a'}, {nm: 'b'}, {nm: 'c'}, {nm: 'd'}]
+			assert.equal(r.indexOfObj(o => o.nm == 'e'), -1)
+		})
+		it('Missing filter', () => {
+			var r = [{nm: 'a'}, {nm: 'b'}, {nm: 'c'}, {nm: 'd'}]
+			try {
+				r.indexOfObj()
+			}
+			catch (e) {
+				assert.ok(e.message == 'filter is not a function', 'Failed to issue exception')
+			}
+		})
+	})
 	describe('json', () => {
 		it('Base case', () => {
 			assert.deepEqual(['a', 'b'].json(), '["a","b"]')

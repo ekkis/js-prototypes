@@ -312,6 +312,11 @@ The following prototype extensions are provided by this package:
    a key and a value with the names passed to this function e.g. `{k: 'a', v: 3}` which 
    converts to `{a: 3}`
 
+   ### indexOfObj filter
+
+   Searches through an array using the *filter* function provided and returns the index
+   number of the first object found, -1 if none is found
+
    ### json
 
    Converts the array to a Json string

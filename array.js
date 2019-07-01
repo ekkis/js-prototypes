@@ -31,6 +31,13 @@ module.exports = {
         var r = (acc, v) => { acc[v[key]] = v[val]; return acc; };
         return this.reduce(r, {});
     },
+    indexOfObj(filter) {
+        var ret = -1;
+        this.some((o,i) => {
+            if (filter(o)) ret = i;
+        })
+        return ret;
+    },
     json() {
         return JSON.stringify(this);
     }
