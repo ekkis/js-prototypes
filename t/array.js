@@ -162,4 +162,40 @@ describe('Arrays', () => {
 			assert.deepEqual(['a', 'b'].json(), '["a","b"]')
 		})
 	})
+	describe('item', () => {
+		var r = [{a: 1, b: 2}, {a: 3, b: 4}, {a: 5, b: 6}]
+		it('Base case', () => {
+			assert.deepEqual(r.item('a', 3), r[1])
+		})
+		it('Not found', () => {
+			var o = r.item('a', 2)
+			assert.equal(typeof o, 'undefined')
+		})
+		it('Invalid key', () => {
+			var o = r.item('c', 1)
+			assert.equal(typeof o, 'undefined')
+		})
+		it('No arguments', () => {
+			var o = r.item()
+			assert.equal(typeof o, 'undefined')
+		})
+		it('Missing arguments', () => {
+			var o = r.item('a')
+			assert.equal(typeof o, 'undefined')
+		})
+		it('Empty array', () => {
+			var r = []
+			var o = r.item('a', 2)
+			assert.equal(typeof o, 'undefined')
+		})
+		it('Scalar array', () => {
+			var r = [0, 1, 2, 3, 4]
+			var o = r.item('a', 2)
+			assert.equal(typeof o, 'undefined')
+		})
+		it('Returns a single value', () => {
+			var r = [{a: 1, b: 2}, {a: 1, b: 4}, {a: 5, b: 6}]
+			assert.deepEqual(r.item('a', 1), r[0])
+		})
+	})
 })

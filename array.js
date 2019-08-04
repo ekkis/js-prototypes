@@ -40,6 +40,10 @@ module.exports = {
     },
     json() {
         return JSON.stringify(this);
+    },
+    item(key, val) {
+        if ((key || val) == undefined) return;
+        return this.filter(o => o[key] == val)[0];
     }
 }
 

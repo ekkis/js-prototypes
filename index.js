@@ -11,9 +11,9 @@ var self = module.exports = {
     force: false,
     groups: ['array', 'string', 'object', 'error'],
     install(...r) {
+        const lib = 'js-prototype-lib';
         if (r.length == 0) r = this.groups;
         iterate(this.ls(...r), (o, fn) => {
-            const lib = 'js-prototype-lib';
             if (!o.val.library) o.val.library = lib;
             if (o.val.library != lib || (o.val.ver || 0) > VER) return;
     

@@ -320,6 +320,11 @@ The following prototype extensions are provided by this package:
    ### json
 
    Converts the array to a Json string
+
+   ### item key, val
+
+   Extracts an item from an array of objects by specifying the key and value sought.  When
+   multiple items match only the first found is returned
    
 ## Objects
 
