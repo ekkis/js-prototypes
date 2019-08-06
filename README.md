@@ -460,11 +460,13 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   `{a:1, b:1, c:1}.notIn({a:2,b:2}) // returns ['c']`
   
   ### getpath path
-  ### setpath path value
+  ### setpath path value init = false
+  ### init path value
 
-  This function pair gets and sets deeply embedded values in an object.  Both work regardless
-  of whether the path exists, creating it as needed and the path can be expressed in dots or
-  slashes, whichever is more comfortable to the user:
+  This function pair gets and sets deeply embedded values in an object.  Paths can be 
+  specified in dots or slashes.  *getpath* returns *undefined* when a path does not exist.
+  *setpath* will create the path when it doesn't exist, unless the *init* parameter is set
+  to true, in which case the alias *init* may be used
   ```js
   var o = {}
   o.setpath('a/b/c', 1)
@@ -477,6 +479,11 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   var o = {}
   o.setpath('a.b.c', 1)
   console.log(o.getpath('a.b.c')) // outputs 1
+
+  // one-time initialisation can be done with the alias
+  var o = {}
+  o.init('a', 2)  // sets o.a to 2
+  o.init('a', 3)  // respects the value already there
   ```
 
   ### json [safe]

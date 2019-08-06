@@ -326,6 +326,16 @@ describe('Objects', () => {
 			var expected = {a: {b: {c: 3}}}
 			assert.deepEqual(actual, expected)
 		})
+		it('Initialisation', () => {
+			var actual = {a: 1}
+			actual.setpath('a', 2, true);
+			assert.deepEqual(actual, {a:1})
+		})
+		it('Alias', () => {
+			var actual = {a: 1}
+			actual.init('a', 2);
+			assert.deepEqual(actual, {a:1})
+		})
 	})
 	describe('json', () => {
 		it('Base case', () => {

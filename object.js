@@ -94,10 +94,14 @@ module.exports = {
         var p = mkpath(this, path);
         return p.o[p.k]; 
     },
-    setpath(path, v) {
+    setpath(path, v, init = false) {
         var p = mkpath(this, path);
-        p.o[p.k] = v;
+        if (!init || !(p.k in p.o)) p.o[p.k] = v;
+        // p.o[p.k] = v;
         return p.o;
+    },
+    init(path, v) {
+        return this.setpath(path, v, true);
     },
     json(safe = false) {
         return safe ? safeJSON(this) : JSON.stringify(this);
