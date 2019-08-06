@@ -100,9 +100,6 @@ module.exports = {
         // p.o[p.k] = v;
         return p.o;
     },
-    init(path, v) {
-        return this.setpath(path, v, true);
-    },
     json(safe = false) {
         return safe ? safeJSON(this) : JSON.stringify(this);
     }

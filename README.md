@@ -466,7 +466,7 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   This function pair gets and sets deeply embedded values in an object.  Paths can be 
   specified in dots or slashes.  *getpath* returns *undefined* when a path does not exist.
   *setpath* will create the path when it doesn't exist, unless the *init* parameter is set
-  to true, in which case the alias *init* may be used
+  to true
   ```js
   var o = {}
   o.setpath('a/b/c', 1)
@@ -480,10 +480,10 @@ this module creates the methods as non-enumerable, which will be perfectly safe
   o.setpath('a.b.c', 1)
   console.log(o.getpath('a.b.c')) // outputs 1
 
-  // one-time initialisation can be done with the alias
+  // one-time initialisation
   var o = {}
-  o.init('a', 2)  // sets o.a to 2
-  o.init('a', 3)  // respects the value already there
+  o.setpath('a', 2, true)  // sets o.a to 2
+  o.setpath('a', 3, true)  // respects the value already there
   ```
 
   ### json [safe]

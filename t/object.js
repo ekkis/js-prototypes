@@ -331,11 +331,6 @@ describe('Objects', () => {
 			actual.setpath('a', 2, true);
 			assert.deepEqual(actual, {a:1})
 		})
-		it('Alias', () => {
-			var actual = {a: 1}
-			actual.init('a', 2);
-			assert.deepEqual(actual, {a:1})
-		})
 	})
 	describe('json', () => {
 		it('Base case', () => {
