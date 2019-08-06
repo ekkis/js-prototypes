@@ -325,6 +325,11 @@ The following prototype extensions are provided by this package:
 
    Extracts an item from an array of objects by specifying the key and value sought.  When
    multiple items match only the first found is returned
+
+   ### contains val
+
+   Returns a boolena indicating whether the passed value exists within the array.  Please note
+   the method works only for scalar values, not objects
    
 ## Objects
 

@@ -198,4 +198,26 @@ describe('Arrays', () => {
 			assert.deepEqual(r.item('a', 1), r[0])
 		})
 	})
+	describe('contains', () => {
+		var r = [2,4,6,8]
+		it('Item exists', () => {
+			assert.equal(r.contains(2), true)
+		})
+		it('Item absent', () => {
+			assert.equal(r.contains(3), false)
+		})
+		it('Array empty', () => {
+			assert.equal([].contains(3), false)
+		})
+		it('No parameters', () => {
+			assert.equal(r.contains(), false)
+		})
+		it('Object parameter', () => {
+			assert.equal(r.contains({}), false)
+		})
+		it('Object array', () => {
+			var r = [{a:1}, {b:1}, {c:1}]
+			assert.equal(r.contains({a:1}), false)
+		})
+	})
 })

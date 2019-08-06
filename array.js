@@ -44,6 +44,9 @@ module.exports = {
     item(key, val) {
         if ((key || val) == undefined) return;
         return this.filter(o => o[key] == val)[0];
+    },
+    contains(v) {
+        return this.indexOf(v) > -1;
     }
 }
 
