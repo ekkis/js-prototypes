@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/js-prototypes.svg)](https://badge.fury.io/js/js-prototypes)
+[![npm version](https://badge.fury.io/js/js-prototype-lib.svg)](https://badge.fury.io/js/js-prototype-lib)
 
 # Javascript Prototype Library
 
