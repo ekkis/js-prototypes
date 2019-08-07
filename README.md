@@ -310,7 +310,8 @@ The following prototype extensions are provided by this package:
 
    Converts a key/value array into an object where the array elements are expected to have
    a key and a value with the names passed to this function e.g. `{k: 'a', v: 3}` which 
-   converts to `{a: 3}`
+   converts to `{a: 3}`.  In such cases where there are multiple values per key, the method
+   will concatenate appropriately e.g. `[{a:1},{a:2},{a:3}]` evaluates to `{a: [1,2,3]}`
 
    ### indexOfObj filter
 

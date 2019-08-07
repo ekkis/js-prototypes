@@ -137,6 +137,16 @@ describe('Arrays', () => {
 			var actual = r.keyval('key', 'val')
 			assert.deepEqual(actual, expected)
 		})
+		it('Array suport', () => {
+			r = [
+				{k: 'a', v: 1},
+				{k: 'a', v: 2},
+				{k: 'a', v: 3}
+			]
+			var expected = {a: [1, 2, 3]}
+			var actual = r.keyval()
+			assert.deepEqual(actual, expected)
+		})
 	})
 	describe('index of object', () => {
 		it('Base case', () => {

@@ -28,7 +28,9 @@ module.exports = {
             : this;
     },
     keyval(key = 'k', val = 'v') {
-        var r = (acc, v) => { acc[v[key]] = v[val]; return acc; };
+        var r = (acc, v) => {
+            propadd(acc, v[key], v[val]); return acc; 
+        };
         return this.reduce(r, {});
     },
     indexOfObj(filter) {
@@ -50,3 +52,10 @@ module.exports = {
     }
 }
 
+function propadd(o, k, v) {
+    if (k in o) {
+        if (Array.isArray(o[k])) o[k].push(v);
+        else o[k] = [o[k], v];
+    }
+    else o[k] = v;
+}
