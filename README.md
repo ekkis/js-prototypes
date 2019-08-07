@@ -331,6 +331,12 @@ The following prototype extensions are provided by this package:
 
    Returns a boolena indicating whether the passed value exists within the array.  Please note
    the method works only for scalar values, not objects
+
+   ### split max
+
+   Breaks up an array into an array of arrays containing no more than `max` elements each.  As
+   an example: `['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].split(3)` results in:
+   `[['a', 'b', 'c'], ['d', 'e', 'f'], ['g', 'h']]`
    
 ## Objects
 

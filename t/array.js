@@ -230,4 +230,17 @@ describe('Arrays', () => {
 			assert.equal(r.contains({a:1}), false)
 		})
 	})
+	describe('split', () => {
+		var r = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+		it('Base case', () => {
+			var expected = [['a', 'b', 'c'], ['d', 'e', 'f'], ['g', 'h']]
+			assert.deepEqual(r.split(3), expected)
+		})
+		it('Niladic call', () => {
+			assert.deepEqual(r.split(), r)
+		})
+		it('Empty array', () => {
+			assert.deepEqual([].split(2), [])
+		})
+	})
 })

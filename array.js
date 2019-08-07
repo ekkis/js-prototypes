@@ -49,6 +49,16 @@ module.exports = {
     },
     contains(v) {
         return this.indexOf(v) > -1;
+    },
+    split(n) {
+        if (!n) return this;
+        var ret = [];
+        for (var i = 0; i < this.length; i++) {
+            let j = Math.floor(i / n);
+            if (!ret[j]) ret[j] = [];
+            ret[j].push(this[i]);
+        }
+        return ret;
     }
 }
 
