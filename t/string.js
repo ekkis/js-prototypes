@@ -31,6 +31,21 @@ describe('Strings', () => {
 			var actual = 'math: %{a} + %{a}'.sprintf({a: 1})
 			assert.equal(actual, 'math: 1 + 1')
 		})
+		it('handles array data', () => {
+			var actual = 'alle %s werden %s'.sprintf(['menschen', 'brüder'])
+			var expected = 'alle menschen werden brüder'
+			assert.equal(actual, expected)
+		})
+		it('array parameter contains non-string data', () => {
+			var actual = 'buy %s bar of soap'.sprintf([1])
+			var expected = 'buy 1 bar of soap'
+			assert.equal(actual, expected)
+		})
+		it('skips objects in array', () => {
+			var actual = 'buy %s bar of %s'.sprintf([{a:1}, 1, 'soap'])
+			var expected = 'buy 1 bar of soap'
+			assert.equal(actual, expected)
+		})
 	})
 	describe('chomp', () => {
 		it('Niladic', () => {

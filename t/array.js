@@ -242,5 +242,10 @@ describe('Arrays', () => {
 		it('Empty array', () => {
 			assert.deepEqual([].split(2), [])
 		})
+		it('Single partition', () => {
+			var r = ['a', 'b']
+			var expected = [['a', 'b']]
+			assert.deepEqual(r.split(4), expected)
+		})
 	})
 })

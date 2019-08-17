@@ -26,6 +26,13 @@ var self = module.exports = {
     sprintf(o) {
         var s = this.toString();
         if (typeof o != 'object') return s;
+        if (Array.isArray(o)) {
+            for (let i = 0; i < o.length; i++) {
+                if (typeof o[i] != 'object')
+                    s = s.replace('%s', o[i]);
+            }
+            return s;
+        }
         for (var k in o)
             s = s.replace(new RegExp('%{' + k + '}', 'g'), o[k]);
         return s;

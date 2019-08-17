@@ -38,9 +38,13 @@ The following prototype extensions are provided by this package:
 
 ## Strings
 
-  ### sprintf
+  ### sprintf [object | array]
   
-  Very similar to the orignal C function but accepts an object with values to use as replacement
+  Very similar to the original C function but only accepts `%s` as the token replacement tag.
+  In this mode the parameter passed must be an array
+  e.g. `"It's a %s of %s".sprintf(["figure", "speech"])`
+
+  As a secondary syntax, the method accepts an object with values to use as replacement
   and references are made with the `%{elem}` syntax
   e.g. `"Call my %{relative}".sprintf({relative: 'mother'})`
   
