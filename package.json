@@ -1,6 +1,6 @@
 {
   "name": "js-prototype-lib",
-  "version": "1.29.2",
+  "version": "1.29.3",
   "description": "A library of prototypes for Javascript",
   "main": "index.js",
   "scripts": {
