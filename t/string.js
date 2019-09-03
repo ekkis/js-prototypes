@@ -361,16 +361,16 @@ describe('Strings', () => {
 	describe('filename functions', () => {
 		var fn = '/dir1/dir2/dir3/fn.ext1.ext2'
 		it('extracts file name', () => {
-			assert.equal(fn.fn('filename'), 'fn.ext1.ext2')
+			assert.equal(fn.path('filename'), 'fn.ext1.ext2')
 		})
 		it('default behaviour', () => {
-			assert.equal(fn.fn(), 'fn.ext1.ext2')
+			assert.equal(fn.path(), 'fn.ext1.ext2')
 		})
 		it('extracts base name', () => {
-			assert.equal(fn.fn('basename'), 'fn.ext1')
+			assert.equal(fn.path('basename'), 'fn.ext1')
 		})
 		it('extracts path', () => {
-			assert.equal(fn.fn('dir'), '/dir1/dir2/dir3')
+			assert.equal(fn.path('dir'), '/dir1/dir2/dir3')
 		})
 	})
 	describe('filesystem functions', () => {

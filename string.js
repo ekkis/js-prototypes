@@ -117,7 +117,7 @@ var self = module.exports = {
         var s = this.trim();
         return s ? JSON.parse(s) : {};
     },
-    fn(segment = 'filename') {
+    path(segment = 'filename') {
         if (segment == 'filename')
             return this.replace(/^.*\//, '');
         if (segment == 'basename')
