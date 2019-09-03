@@ -213,9 +213,11 @@
   'sample text'.tee('t', {argIsPath: true}) // the option forces the argument to serve as a path
   ```
 
-  The `ls` command accepts two optional parameters, a regular expression to match
+  The `ls` command accepts two optional parameters, a filter (a regular expression) to match
   names against, and an options object, which is passed to the underlying `fs.readdirSync()`
-  method.  Options may be passed without supplying a regular expression and vice-versa.
+  method.  Options may be passed without supplying a regular expression and vice-versa.  If
+  passing only options, the key `filter` may be passed, in addition to `fullpath`, a boolean
+  value that causes the filenames to be returned with a full path
   
   Like `rmdir`, this method also supports an explicit recursion directive, therefore
   `'/tmp'.ls({recurse: true})` will return the entire tree under the /tmp directory.  The

@@ -435,6 +435,18 @@ describe('Strings', () => {
 		it('reads directory', () => {
 			assert.deepEqual(d.ls(), ['d1', 'f1.txt', 'f2.txt', 'sym1', 'sym2'])
 		})
+		it('reads full pathnames', () => {
+			var actual = d.ls({fullpath: true})
+			var m = actual[0].match(/.*\//)
+			assert.ok(m, 'no path in filenames')
+			assert.deepEqual(actual, [
+				m[0] + 'd1', 
+				m[0] + 'f1.txt', 
+				m[0] + 'f2.txt', 
+				m[0] + 'sym1', 
+				m[0] + 'sym2'
+			])
+		})
 		it('reads directory - entry objects', () => {
 			var actual = d.ls({withFileTypes: true})
 			assert.ok(actual[0] instanceof fs.Dirent)

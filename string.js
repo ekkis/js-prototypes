@@ -141,21 +141,22 @@ var self = module.exports = {
             })
         self.fs.rmdirSync(path);
     },
-    ls(re, opts = {}) {
+    ls(filter, opts = {}) {
         var path = this.resolve();
-        if (re) {
-            var rex = re instanceof RegExp;
-            if (!rex) { opts = re; re = undefined; }
+        if (filter) {
+            var rex = filter instanceof RegExp;
+            if (!rex) { opts = filter; filter = opts.filter; }
         }
         var ret;
-        if (!opts.recurse) ret = ls(path, re, opts);
+        if (!opts.recurse) ret = ls(path, opts);
         else {
-            ret = lsr(path, re, opts);
+            ret = lsr(path, opts);
             if (!opts.withFileTypes) ret = ret.map(o => o.name);
         }
         if (rex) ret = ret.filter(nm => (
-            typeof nm == 'object' ? nm.name : nm).match(re)
+            typeof nm == 'object' ? nm.name : nm).match(filter)
         );
+        if (opts.fullpath) ret = ret.map(fn => path + '/' + fn);
         return ret;
     },
     cat(opts = 'utf8') {
@@ -212,7 +213,7 @@ function swap(cond, a, b) {
     return cond ? [b, a] : [a, b];
 }
 
-function ls(path, re, opts = {}) {
+function ls(path, opts = {}) {
     var ret = self.fs.readdirSync(path, opts);
     if (!opts.withFileTypes) return ret;
 
@@ -234,15 +235,15 @@ function ls(path, re, opts = {}) {
     return ret;
 }
 
-function lsr(path, re, opts) {
+function lsr(path, opts) {
     if (!path.endsWith('/')) path += '/'
     try {
-        var ret = ls(path, re, Object.assign({withFileTypes: true}, opts))
+        var ret = ls(path, Object.assign({withFileTypes: true}, opts))
             .map(o => {
                 o.name = path + o.name;
                 var ret = [o]
                 if (o.isDirectory()) 
-                    ret = ret.concat(lsr(o.name, re, opts))
+                    ret = ret.concat(lsr(o.name, opts))
                 return ret;
             })
         return Array.prototype.flat ? ret.flat() : flat(ret);
