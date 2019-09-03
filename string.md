@@ -173,6 +173,14 @@
   Parses the given Json string, returning an object.  Empty or whitespace strings
   return an empty object instead of issuing an exception
 
+  ### path [segment = 'filename']
+
+  Parses the path provided, returning one of the following segments:
+
+  * filename: removes directory information from a path
+  * basename: strips path of directory and extension
+  * dir: returns only the directory of the path
+  
   ### resolve
   ### mkdir / rmdir / ls
   ### fex / chmod / chown / fstat

@@ -358,6 +358,21 @@ describe('Strings', () => {
 			assert.deepEqual(' \t '.json(), {})
 		})
 	})
+	describe('filename functions', () => {
+		var fn = '/dir1/dir2/dir3/fn.ext1.ext2'
+		it('extracts file name', () => {
+			assert.equal(fn.fn('filename'), 'fn.ext1.ext2')
+		})
+		it('default behaviour', () => {
+			assert.equal(fn.fn(), 'fn.ext1.ext2')
+		})
+		it('extracts base name', () => {
+			assert.equal(fn.fn('basename'), 'fn.ext1')
+		})
+		it('extracts path', () => {
+			assert.equal(fn.fn('dir'), '/dir1/dir2/dir3')
+		})
+	})
 	describe('filesystem functions', () => {
 		var d = os.tmpdir() + '/__tst__';
 		it('resolves dots', () => {
