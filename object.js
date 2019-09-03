@@ -101,6 +101,7 @@ module.exports = {
         return p.o;
     },
     json(safe = false) {
+        if (this instanceof Error) return JSON.stringify(this.obj());
         return safe ? safeJSON(this) : JSON.stringify(this);
     }
 }
