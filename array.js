@@ -45,7 +45,16 @@ module.exports = {
     },
     item(key, val) {
         if ((key || val) == undefined) return;
-        return this.filter(o => o[key] == val)[0];
+        var r = this.filter(o => {
+            var v = o[key];
+            if (val instanceof RegExp) {
+                if (typeof v != 'string') v = v.toString();
+                return v.match(val);
+            }
+            else
+                return v == val;
+        });
+        return r[0]; 
     },
     contains(v) {
         return this.indexOf(v) > -1;

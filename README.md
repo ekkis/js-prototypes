@@ -329,7 +329,8 @@ The following prototype extensions are provided by this package:
    ### item key, val
 
    Extracts an item from an array of objects by specifying the key and value sought.  When
-   multiple items match only the first found is returned
+   multiple items match only the first found is returned.  The `val` parameter may specify
+   a regular expression, in which case it is matched against the array elements
 
    ### contains val
 

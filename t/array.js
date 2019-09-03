@@ -207,6 +207,22 @@ describe('Arrays', () => {
 			var r = [{a: 1, b: 2}, {a: 1, b: 4}, {a: 5, b: 6}]
 			assert.deepEqual(r.item('a', 1), r[0])
 		})
+		it('Integer array is regex safe', () => {
+			var r = [{a: 1, b: 2}, {a: 1, b: 4}, {a: 5, b: 6}]
+			assert.deepEqual(r.item('a', /1/), r[0])
+		})
+		it('Supports regular expressions', () => {
+			var r = [{a: 1, b: 'abc'}, {a: 1, b: 'bcd'}, {a: 5, b: 'cde'}]
+			assert.deepEqual(r.item('b', /e/), r[2])
+		})
+		it('String matches (partial)', () => {
+			var r = [{a: 1, b: 'abc'}, {a: 1, b: 'bcd'}, {a: 5, b: 'cde'}]
+			assert.deepEqual(typeof r.item('b', 'e'), 'undefined')
+		})
+		it('String matches (full)', () => {
+			var r = [{a: 1, b: 'abc'}, {a: 1, b: 'bcd'}, {a: 5, b: 'cde'}]
+			assert.deepEqual(r.item('b', 'cde'), r[2])
+		})
 	})
 	describe('contains', () => {
 		var r = [2,4,6,8]
