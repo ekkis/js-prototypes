@@ -53,6 +53,7 @@ try {
 catch(e) {
     console.log(JSON.stringify(e))        // produces '{}', but
     console.log(JSON.stringify(e.obj()))  // generates {"message": "error", "stack": "Error: test\n at Context.it..."}
+    console.log(e.json())                 // more easily
 }
 ```
 
