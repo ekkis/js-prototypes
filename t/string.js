@@ -406,6 +406,20 @@ describe('Strings', () => {
 			'contents of file 1'.tee(path)
 			assert.ok(fs.existsSync(path))
 		})
+		it('reads file', () => {
+			var path = d + '/f1.txt'
+			assert.equal(path.cat(), 'contents of file 1')
+		})
+		it('clobbers a file', () => {
+			var path = d + '/f1.txt'
+			path.tee('first line', {clobber: true})
+			assert.equal(path.cat(), 'first line')
+		})
+		it('appends to a file', () => {
+			var path = d + '/f1.txt'
+			path.tee('\nsecond line')
+			assert.equal(path.cat(), 'first line\nsecond line')
+		})
 		it('creates a file symlink', () => {
 			var path = d + '/sym1'
 			path.symlink(d + '/f1.txt')
@@ -437,10 +451,6 @@ describe('Strings', () => {
 			var path = d + '/f4.txt'
 			path.rm();
 			assert.ok(!fs.existsSync(path))
-		})
-		it('reads file', () => {
-			var path = d + '/f1.txt'
-			assert.equal(path.cat(), 'contents of file 1')
 		})
 		it('reads properties', () => {
 			var path = d + '/f1.txt'

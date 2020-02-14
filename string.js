@@ -176,7 +176,10 @@ var self = module.exports = {
             : s.indexOf('/') > -1
             ;
         var [path, data] = swap(!argIsPath, s, this.resolve());
-        self.fs.writeFileSync(path, data, opts);
+        if (opts.clobber)
+            self.fs.writeFileSync(path, data, opts);
+        else
+            self.fs.appendFileSync(path, data, opts);
     },
     cp(dst, flags) {
         self.fs.copyFileSync(this.resolve(), dst, flags);

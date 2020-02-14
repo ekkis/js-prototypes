@@ -221,6 +221,9 @@
   'sample text'.tee('t', {argIsPath: true}) // the option forces the argument to serve as a path
   ```
 
+  Additionally, by default the `tee` command appends to files.  To clobber, pass the option
+  `{clobber: true}`
+  
   The `ls` command accepts two optional parameters, a filter (a regular expression) to match
   names against, and an options object, which is passed to the underlying `fs.readdirSync()`
   method.  Options may be passed without supplying a regular expression and vice-versa.  If
