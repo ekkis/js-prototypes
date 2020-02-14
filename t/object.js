@@ -343,7 +343,8 @@ describe('Objects', () => {
 				o.json(); throw new Error('Should have issued exception')
 			}
 			catch(e) {
-				if (e.message == 'Converting circular structure to JSON')
+				let rex = /Converting circular structure to JSON/;
+				if (rex.test(e.message))
 					assert.ok('fails as expected')
 				else throw e
 			}

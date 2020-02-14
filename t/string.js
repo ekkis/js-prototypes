@@ -494,6 +494,9 @@ describe('Strings', () => {
 		it('directory existence', () => {
 			assert.ok(d.fex())
 		})
+		it('is directory', () => {
+			assert.ok(d.isdir())
+		})
 		it('stat - regular file', () => {
 			var path = d + '/' + 'f1.txt'
 			var st = path.fstat()

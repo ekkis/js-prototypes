@@ -18,9 +18,9 @@ npm install js-prototype-lib
 const jsp = require('js-prototype-lib');
 
 // install classes of extensions
-jsp.install();                      // installs array and string
+jsp.install();                      // installs all extensions
 jsp.install('object');              // installs object prototypes (see warnings)
-jsp.install('array', 'string');     // same as .install()
+jsp.install('array', 'string');     // installs array and string extensions
 
 // and use them
 console.log([1,2,3].last());        // should print 3
@@ -115,7 +115,16 @@ both of which could show:
 
 # Contribute
 
-If you have an extension you're fond of, post an issue on Github.  We're happy to add new functionality
+If you have an extension you're fond of, post an issue on Github.  We're happy to add new 
+functionality.  If you clone this repo and make changes, make sure to add tests for your changes
+and generate a Pull Request only when they pass.  You can run like this:
+```
+npm test
+```
+If you decide to publish on NPM this command should do it:
+```
+npm version <patch|minor|major>
+```
 
 # Licence
 

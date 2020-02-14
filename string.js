@@ -196,6 +196,9 @@ var self = module.exports = {
     fex() {
         return self.fs.existsSync(this.resolve());
     },
+    isdir() {
+        return self.fs.lstatSync(this.toString()).isDirectory();
+    },
     fstat(opts = {}) {
         var path = this.resolve()
         var fn = opts.symlinks ? 'lstat' : 'stat'; 

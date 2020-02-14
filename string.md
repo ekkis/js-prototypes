@@ -183,7 +183,7 @@
   
   ### resolve
   ### mkdir / rmdir / ls
-  ### fex / chmod / chown / fstat
+  ### fex / isdir / chmod / chown / fstat
   ### cat / tee / cp / mv / rm / symlink
 
   This family of functions provides filesystem functionality on file paths.
