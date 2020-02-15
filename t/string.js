@@ -394,17 +394,40 @@ describe('Strings', () => {
 			path.mkdir()
 			assert.ok(fs.existsSync(path), 'directory not created')
 		})
-		it('creates file - form 1', () => {
+		it('creates file - argument as data', () => {
 			var path = d + '/f1.txt'
 			if (fs.existsSync(path)) fs.unlinkSync(path)
-			path.tee('contents of file 1')
+			var msg = 'contents of file 1'
+			path.tee(msg)
 			assert.ok(fs.existsSync(path))
+			assert.equal(fs.readFileSync(path, 'utf8'), msg)
 		})
-		it('creates file - form 2', () => {
+		it('creates file - argument as path', () => {
 			var path = d + '/f2.txt'
 			if (fs.existsSync(path)) fs.unlinkSync(path)
-			'contents of file 1'.tee(path)
+			var msg = 'contents of file 1'
+			msg.tee(path)
 			assert.ok(fs.existsSync(path))
+			assert.equal(fs.readFileSync(path, 'utf8'), msg)
+		})
+		it('creates file - argument as data (forced)', () => {
+			var path = d + '/f2.txt'
+			if (fs.existsSync(path)) fs.unlinkSync(path)
+			var msg = 'contents/of/file'
+			path.tee(msg, {argIsPath: false})
+			assert.ok(fs.existsSync(path))
+			assert.equal(fs.readFileSync(path, 'utf8'), msg)
+		})
+		it('creates file - argument as path (forced)', () => {
+			var cwd = process.cwd()
+			process.chdir(d)
+			var fn = 'f2.txt'
+			if (fs.existsSync(fn)) fs.unlinkSync(fn)
+			var msg = 'contents of file'
+			msg.tee(fn, {argIsPath: true})
+			assert.ok(fs.existsSync(fn))
+			assert.equal(fs.readFileSync(fn, 'utf8'), msg)
+			process.chdir(cwd)
 		})
 		it('creates a hidden file', () => {
 			var path = d + '/.f1.txt'

@@ -189,7 +189,8 @@ var self = module.exports = {
             ? opts.argIsPath 
             : s.indexOf('/') > -1
             ;
-        var [path, data] = swap(!argIsPath, s, this.resolve());
+        var [path, data] = swap(!argIsPath, s, this.toString());
+        path = path.resolve();
         if (opts.clobber)
             self.fs.writeFileSync(path, data, opts);
         else

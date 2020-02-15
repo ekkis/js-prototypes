@@ -205,20 +205,21 @@
   Symlinks take the target as a parameter, so `'sym1'.symlink('/tmp/x')` creates
   a symlink called `sym1` pointing to `/tmp/x`
 
-  The `tee` method is used for writing to files but has two modes, 1) where the
-  argument specifies the path, and 2) where the object the method is called on
-  serves as the path
-  
-  The determining factor for which is which is the presence of slashes in the argument,
-  but this creates ambiguity.  Consider the third call below where neither is clearly
-  a path (because there are no slashes).  In this case, the the argument is presumed
-  to be data, but this can be forced with the option shown:
+  The `tee` method is used for writing to files but has two modes: 1) where the
+  first argument specifies the path, and 2) where the object the method is called
+  on serves as the path  
   ```js
-  '/tmp/t.txt'.tee('sample text')           // these two calls
-  'sample text'.tee('/tmp/t.txt')           // are equivalent
-
-  't'.tee('sample text')                    // this call is ambiguous so the argument is presumed data
-  'sample text'.tee('t', {argIsPath: true}) // the option forces the argument to serve as a path
+  '/tmp/t.txt'.tee('sample text')   // these two calls
+  'sample text'.tee('/tmp/t.txt')   // are equivalent
+  ```
+  The method determines the role of the first argument by testing for the presence
+  of slashes, which indicate a file path, but since in certain cases this proves
+  unreliable an options argument can disambiguate:
+  ```js
+  // in this case the argument is incorrectly presumed to be a path because of the slash
+  't.txt'.tee('sample/text', {argIsPath: false})
+  // in this case the argument contains no slashes and is incorrectly presumed as data
+  'sample text'.tee('t.txt', {argIsPath: true})
   ```
 
   Additionally, by default the `tee` command appends to files.  To clobber, pass the option
