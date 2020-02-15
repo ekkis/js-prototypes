@@ -151,19 +151,23 @@ var self = module.exports = {
     },
     ls(filter, opts = {}) {
         var path = this.resolve();
-        if (filter) {
-            var rex = filter instanceof RegExp;
-            if (!rex) { opts = filter; filter = opts.filter; }
+        if (isObj(filter)) {
+            opts = filter; filter = opts.filter;
         }
+        if (!filter) filter = [];
+        if (!Array.isArray(filter)) filter = [filter];
+        if (opts.hidden === false) filter.push(/^[^.]/);
+
         var ret;
         if (!opts.recurse) ret = ls(path, opts);
         else {
             ret = lsr(path, opts);
             if (!opts.withFileTypes) ret = ret.map(o => o.name);
         }
-        if (rex) ret = ret.filter(nm => (
-            typeof nm == 'object' ? nm.name : nm).match(filter)
-        );
+        if (filter.length > 0) filter.forEach(filter => {
+            ret = ret.filter(nm => (typeof nm == 'object' ? nm.name : nm).match(filter)
+            );
+        });
         if (opts.fullpath) ret = ret.map(fn => path + '/' + fn);
         return ret;
     },
@@ -265,4 +269,8 @@ function lsr(path, opts) {
     catch(e) {
         console.error(e);
     }        
+}
+
+function isObj(o) {
+    return typeof o == 'object' && !Array.isArray(o) && !(o instanceof RegExp);
 }

@@ -406,9 +406,27 @@ describe('Strings', () => {
 			'contents of file 1'.tee(path)
 			assert.ok(fs.existsSync(path))
 		})
+		it('creates a hidden file', () => {
+			var path = d + '/.f1.txt'
+			path.tee('contents of hidden file')
+			assert.ok(fs.existsSync(path))
+		})
 		it('reads file', () => {
 			var path = d + '/f1.txt'
 			assert.equal(path.cat(), 'contents of file 1')
+		})
+		it('reads hidden file', () => {
+			var path = d + '/.f1.txt'
+			assert.equal(path.cat(), 'contents of hidden file')
+		})
+		it('cannot read missing file', () => {
+			try {
+				var s = (d + '/x').cat()
+				throw new Error('Should have aborted')
+			}
+			catch(e) {
+				assert.ok(e.message.match(/no such file or directory/))
+			}
 		})
 		it('clobbers a file', () => {
 			var path = d + '/f1.txt'
@@ -458,29 +476,34 @@ describe('Strings', () => {
 			assert.ok(st instanceof fs.Stats)
 		})
 		it('reads directory', () => {
-			assert.deepEqual(d.ls(), ['d1', 'f1.txt', 'f2.txt', 'sym1', 'sym2'])
+			assert.deepEqual(d.ls(), ['.f1.txt', 'd1', 'f1.txt', 'f2.txt', 'sym1', 'sym2'])
 		})
 		it('reads full pathnames', () => {
 			var actual = d.ls({fullpath: true})
 			var m = actual[0].match(/.*\//)
 			assert.ok(m, 'no path in filenames')
-			assert.deepEqual(actual, [
-				m[0] + 'd1', 
-				m[0] + 'f1.txt', 
-				m[0] + 'f2.txt', 
-				m[0] + 'sym1', 
-				m[0] + 'sym2'
-			])
+			var expected = ['.f1.txt', 'd1', 'f1.txt', 'f2.txt', 'sym1', 'sym2']
+			assert.deepEqual(actual, expected.map(fn => m[0] + fn))
 		})
 		it('reads directory - entry objects', () => {
 			var actual = d.ls({withFileTypes: true})
 			assert.ok(actual[0] instanceof fs.Dirent)
-			assert.equal(actual[0].name, 'd1')
+			assert.equal(actual[0].name, '.f1.txt')
+		})
+		it('reads directory - no hidden files', () => {
+			var actual = d.ls({hidden: false})
+			var expected = ['d1', 'f1.txt', 'f2.txt', 'sym1', 'sym2']
+			assert.deepEqual(actual, expected)
+		})
+		it('reads directory - layered filters', () => {
+			var actual = d.ls([/f/, /2/])
+			var expected = ['f2.txt']
+			assert.deepEqual(actual, expected)
 		})
 		it('reads directory - recursive', () => {
 			var actual = d.ls({recurse: true})
 			var expected = [
-				'd1','d1/d2','d1/d2/d3',
+				'.f1.txt', 'd1','d1/d2','d1/d2/d3',
 				'f1.txt','f2.txt',
 				'sym1','sym2'
 			]
@@ -489,7 +512,7 @@ describe('Strings', () => {
 		it('reads directory - symlinks', () => {
 			var actual = d.ls({followSymlinks: true, recurse: true})
 			var expected = [
-				'd1','d1/d2','d1/d2/d3',
+				'.f1.txt', 'd1','d1/d2','d1/d2/d3',
 				'f1.txt','f2.txt',
 				'sym1','sym2','sym2/d2','sym2/d2/d3'
 			]
