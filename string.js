@@ -141,7 +141,7 @@ var self = module.exports = {
     },
     rmdir(opts = {}) {
         var path = this.resolve();
-        if (opts.recurse) path.ls({recurse: true, withFileTypes: true})
+        if (opts.recurse) path.ls({recurse: true, withFileTypes: true, fullpath: true})
             .sort((a,b) => a.name.length < b.name.length ? 1 : -1)
             .forEach(o => {
                 if (o.isDirectory()) self.fs.rmdirSync(o.name);
@@ -164,12 +164,22 @@ var self = module.exports = {
             ret = lsr(path, opts);
             if (!opts.withFileTypes) ret = ret.map(o => o.name);
         }
+        if (!opts.fullpath) {
+            ret = ret.map(o => chomp(o));
+        }
         if (filter.length > 0) filter.forEach(filter => {
-            ret = ret.filter(nm => (typeof nm == 'object' ? nm.name : nm).match(filter)
+            ret = ret.filter(
+                nm => (typeof nm == 'object' ? nm.name : nm).match(filter)
             );
         });
-        if (opts.fullpath) ret = ret.map(fn => path + '/' + fn);
         return ret;
+
+        function chomp(o) {
+            if (typeof o == 'string')
+                return o.replace(path + '/', '');
+            o.name = o.name.replace(path + '/', '');
+            return o;
+        }
     },
     cat(opts = 'utf8') {
         return self.fs.readFileSync(this.resolve(), opts);
@@ -233,7 +243,7 @@ function swap(cond, a, b) {
 
 function ls(path, opts = {}) {
     var ret = self.fs.readdirSync(path, opts);
-    if (!opts.withFileTypes) return ret;
+    if (!opts.withFileTypes) return ret.map(fn => path + '/' + fn);
 
     // node v8 does not support withFileTypes so we must emulate it
     if (typeof ret[0] == 'string') {

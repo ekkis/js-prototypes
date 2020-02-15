@@ -507,7 +507,16 @@ describe('Strings', () => {
 				'f1.txt','f2.txt',
 				'sym1','sym2'
 			]
-			assert.deepEqual(actual, expected.map(s => d + '/' + s))
+			assert.deepEqual(actual, expected)
+		})
+		it('reads directory - recursive, full pathnames', () => {
+			var actual = d.ls({recurse: true, fullpath: true})
+			var expected = [
+				'.f1.txt', 'd1','d1/d2','d1/d2/d3',
+				'f1.txt','f2.txt',
+				'sym1','sym2'
+			]
+			assert.deepEqual(actual, expected.map(fn => d + '/' + fn))
 		})
 		it('reads directory - symlinks', () => {
 			var actual = d.ls({followSymlinks: true, recurse: true})
@@ -516,7 +525,7 @@ describe('Strings', () => {
 				'f1.txt','f2.txt',
 				'sym1','sym2','sym2/d2','sym2/d2/d3'
 			]
-			assert.deepEqual(actual, expected.map(s => d + '/' + s))
+			assert.deepEqual(actual, expected)
 		})
 		it('file existence', () => {
 			var path = d + '/f1.txt'

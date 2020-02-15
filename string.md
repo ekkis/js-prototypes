@@ -227,8 +227,8 @@
   The `ls` command accepts two optional parameters, a filter (a regular expression or array 
   of such) to match names against, and an options object, which is passed to the underlying
   `fs.readdirSync()` method.  Options may be passed without supplying a filter and vice-versa.
-  If passing only options, the key `filter` may be used to supply filters, in addition to
-  `fullpath`, a boolean value that causes the filenames to be returned with a full path
+  If passing only options, the key `filter` may be used to supply filters.  Additionally, the
+  `fullpath` switch may be used to return full paths as otherwise relative paths are returned
   
   Like `rmdir`, this method also supports an explicit recursion directive, therefore
   `'/tmp'.ls({recurse: true})` will return the entire tree under the /tmp directory.  The
