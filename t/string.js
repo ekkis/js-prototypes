@@ -434,6 +434,11 @@ describe('Strings', () => {
 			path.tee('contents of hidden file')
 			assert.ok(fs.existsSync(path))
 		})
+		it('creates file - binary', () => {
+			var path = d + '/b1.bin'
+			path.tee('$������,�dN�1��K��G��������W�4�t��НR�Kt���*��Z��2')
+			assert.ok(fs.existsSync(path))
+		})
 		it('reads file', () => {
 			var path = d + '/f1.txt'
 			assert.equal(path.cat(), 'contents of file 1')
@@ -441,6 +446,20 @@ describe('Strings', () => {
 		it('reads hidden file', () => {
 			var path = d + '/.f1.txt'
 			assert.equal(path.cat(), 'contents of hidden file')
+		})
+		it('reads binary file - utf8', () => {
+			var path = d + '/b1.bin'
+			assert.equal(path.cat(), '$������,�dN�1��K��G��������W�4�t��НR�Kt���*��Z��2')
+		})
+		it('reads binary file - buffer', () => {
+			var path = d + '/b1.bin'
+			var buf = path.cat({})
+			assert.ok(buf instanceof Buffer)
+		})
+		it('reads binary file - base64', () => {
+			var path = d + '/b1.bin'
+			var s = path.cat('base64')
+			assert.ok(!s.match(/[^\x00-\x7F]/), 'Non ASCII characters found in base64')
 		})
 		it('cannot read missing file', () => {
 			try {
@@ -499,13 +518,15 @@ describe('Strings', () => {
 			assert.ok(st instanceof fs.Stats)
 		})
 		it('reads directory', () => {
-			assert.deepEqual(d.ls(), ['.f1.txt', 'd1', 'f1.txt', 'f2.txt', 'sym1', 'sym2'])
+			assert.deepEqual(d.ls(), [
+				'.f1.txt', 'b1.bin', 'd1', 'f1.txt', 'f2.txt', 'sym1', 'sym2'
+			])
 		})
 		it('reads full pathnames', () => {
 			var actual = d.ls({fullpath: true})
 			var m = actual[0].match(/.*\//)
 			assert.ok(m, 'no path in filenames')
-			var expected = ['.f1.txt', 'd1', 'f1.txt', 'f2.txt', 'sym1', 'sym2']
+			var expected = ['.f1.txt', 'b1.bin', 'd1', 'f1.txt', 'f2.txt', 'sym1', 'sym2']
 			assert.deepEqual(actual, expected.map(fn => m[0] + fn))
 		})
 		it('reads directory - entry objects', () => {
@@ -515,7 +536,7 @@ describe('Strings', () => {
 		})
 		it('reads directory - no hidden files', () => {
 			var actual = d.ls({hidden: false})
-			var expected = ['d1', 'f1.txt', 'f2.txt', 'sym1', 'sym2']
+			var expected = ['b1.bin', 'd1', 'f1.txt', 'f2.txt', 'sym1', 'sym2']
 			assert.deepEqual(actual, expected)
 		})
 		it('reads directory - layered filters', () => {
@@ -526,7 +547,7 @@ describe('Strings', () => {
 		it('reads directory - recursive', () => {
 			var actual = d.ls({recurse: true})
 			var expected = [
-				'.f1.txt', 'd1','d1/d2','d1/d2/d3',
+				'.f1.txt', 'b1.bin', 'd1','d1/d2','d1/d2/d3',
 				'f1.txt','f2.txt',
 				'sym1','sym2'
 			]
@@ -535,7 +556,7 @@ describe('Strings', () => {
 		it('reads directory - recursive, full pathnames', () => {
 			var actual = d.ls({recurse: true, fullpath: true})
 			var expected = [
-				'.f1.txt', 'd1','d1/d2','d1/d2/d3',
+				'.f1.txt', 'b1.bin', 'd1','d1/d2','d1/d2/d3',
 				'f1.txt','f2.txt',
 				'sym1','sym2'
 			]
@@ -544,7 +565,7 @@ describe('Strings', () => {
 		it('reads directory - symlinks', () => {
 			var actual = d.ls({followSymlinks: true, recurse: true})
 			var expected = [
-				'.f1.txt', 'd1','d1/d2','d1/d2/d3',
+				'.f1.txt', 'b1.bin', 'd1','d1/d2','d1/d2/d3',
 				'f1.txt','f2.txt',
 				'sym1','sym2','sym2/d2','sym2/d2/d3'
 			]

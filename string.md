@@ -182,29 +182,47 @@
   * dir: returns only the directory of the path
   
   ### resolve
-  ### mkdir / rmdir / ls
-  ### fex / isdir / chmod / chown / fstat
-  ### cat / tee / cp / mv / rm / symlink
-
-  This family of functions provides filesystem functionality on file paths.
-  The functions make use of the *Sync* versions in the 'fs' package and behave 
-  pretty much like their bash equivalents
-
-  **- Notes -**
+  
   The `.resolve()` method is more-or-less equivalent to `require('path').resolve()` 
   and can be used to expand double-dots, relative paths, etc. e.g. `'..'.resolve()` 
   yields the full path to the parent directory.  However, this method also resolves
   tildes, which are defined as equivalent to the return of `os.homedir()` -- thus
   `'~/.bashrc`.resolve()` returns the full path to the bash resource file
   
+  ### mkdir
+  ### rmdir [opts.recurse | bool]
+
   Both `mkdir` and `rmdir` both recurse e.g. `'/tmp/a/b/c/d'.mkdir()` creates
   each component in the path as needed, but in the case of the latter an 
   explicit directive is needed i.e. `'/tmp/a'.rmdir()` will fail but
-  `'/tmp/a'.rmdir({recurse: true})` succeeds
-  
+  `'/tmp/a'.rmdir({recurse: true})` succeeds.  Alternatively, `'/tmp/a'.rmdir(true)`
+  can also be used
+
+  ### symlink <target>
+
   Symlinks take the target as a parameter, so `'sym1'.symlink('/tmp/x')` creates
   a symlink called `sym1` pointing to `/tmp/x`
 
+  ### cat [opts: string|object = 'utf8']: string | buffer
+
+  Like its bash equivalent, this method reads a file, returning the contents in
+  the encoding method specified
+  
+  If an is given in object form, it is passed through verbatim to the `.readFileSync()` 
+  method.  If given as a string, it specifies the *encoding* member of the options 
+  object and accepts any value acceptable to the underlying method.  If passed 
+  `base64`, that encoding is used, and if left unspecified, `utf8` is used.  Finally,
+  an empty object may be passed to obtain a buffer
+
+  Examples:
+  ```js
+  '~/.profile'.cat()        // returns the contents of your profile
+  'logo.jpg'.cat('base64')  // returns an image in ASCII form
+  'x.txt'.cat({})           // returns a buffer
+  ```
+  
+  ### tee [path | text]
+  
   The `tee` method is used for writing to files but has two modes: 1) where the
   first argument specifies the path, and 2) where the object the method is called
   on serves as the path  
@@ -225,6 +243,8 @@
   Additionally, by default the `tee` command appends to files.  To clobber, pass the option
   `{clobber: true}`
   
+  ### ls [RegEx | object]: array
+  
   The `ls` command accepts two optional parameters, a filter (a regular expression or array 
   of such) to match names against, and an options object, which is passed to the underlying
   `fs.readdirSync()` method.  Options may be passed without supplying a filter and vice-versa.
@@ -244,12 +264,21 @@
   d.ls(/^s/)                    // regular expressions are nicer.  returns: ['system.log']
   d.ls({withFileTypes: true})   // returns fs.Dirent objects
   ```
-  Other examples:
-  ```javascript
-  '~/.profile'.cat()    // would return the contents of your profile
-  'x.tst'.rm()          // removes the file
-  '~/t.txt'.mv('/tmp')  // would move t.txt in your home directory to the /tmp
+  ### fex / isdir: bool
   
-  // cat accepts an encoding
-  var s = '~/.bashrc'.cat('utf8')
+  `fex` tests for the existence of a file (or directory), whilst `isdir` indicates
+  whether the argument passed is a directory.  Both methods return a boolean value
+
+  ### chmod <mode>
+  ### chown <uid> <gid>
+  ### fstat
+  ### cp / mv / rm
+
+  These methods work pretty much like their Bash equivalents:
+
+  ```js
+  'x.txt'.chmod(400)      // sets permissions
+  'x.tst'.rm()            // removes the file
+  '~/t.txt'.mv('/tmp')    // would move t.txt in your home directory to the /tmp
+  '~/.bashrc'.cp('/tmp')  // copies your bash resource file to the temporary directory
   ```

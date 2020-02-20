@@ -141,6 +141,7 @@ var self = module.exports = {
     },
     rmdir(opts = {}) {
         var path = this.resolve();
+        if (typeof opts == 'boolean') opts = {recurse: opts};
         if (opts.recurse) path.ls({recurse: true, withFileTypes: true, fullpath: true})
             .sort((a,b) => a.name.length < b.name.length ? 1 : -1)
             .forEach(o => {
@@ -182,6 +183,11 @@ var self = module.exports = {
         }
     },
     cat(opts = 'utf8') {
+        if (typeof opts == 'string') opts = {encoding: opts};
+        if (opts.encoding == 'base64') {
+            var buf = self.fs.readFileSync(this.resolve());
+            return new Buffer.from(buf).toString('base64');
+        }
         return self.fs.readFileSync(this.resolve(), opts);
     },
     tee(s, opts = {}) {
