@@ -122,7 +122,7 @@ var self = module.exports = {
             return this.replace(/^.*\//, '');
         if (segment == 'basename')
             return this.replace(/^.*\//, '').replace(/\.\w+$/, '');
-        if (segment == 'dir')
+        if (segment == 'dir' && this.indexOf('/') > -1)
             return this.replace(/\/[^/]*$/, '');
     },
     resolve() {
@@ -191,12 +191,13 @@ var self = module.exports = {
         return self.fs.readFileSync(this.resolve(), opts);
     },
     tee(s, opts = {}) {
-        var argIsPath = 'argIsPath' in opts
-            ? opts.argIsPath 
-            : s.indexOf('/') > -1
-            ;
+        var {argIsPath} = opts;
+        if (s instanceof Buffer) argIsPath = false;
+        else if (typeof argIsPath == 'undefined') argIsPath = s.indexOf('/') > -1;
+
         var [path, data] = swap(!argIsPath, s, this.toString());
         path = path.resolve();
+        if (!opts.nomkdir) path.path('dir').mkdir();
         if (opts.clobber)
             self.fs.writeFileSync(path, data, opts);
         else

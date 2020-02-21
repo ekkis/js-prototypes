@@ -369,8 +369,11 @@ describe('Strings', () => {
 		it('extracts base name', () => {
 			assert.equal(fn.path('basename'), 'fn.ext1')
 		})
-		it('extracts path', () => {
+		it('extracts directory', () => {
 			assert.equal(fn.path('dir'), '/dir1/dir2/dir3')
+		})
+		it('extracts directory when non presenet', () => {
+			assert.equal('fn.txt'.path('dir'), undefined)
 		})
 	})
 	describe('filesystem functions', () => {
@@ -434,10 +437,45 @@ describe('Strings', () => {
 			path.tee('contents of hidden file')
 			assert.ok(fs.existsSync(path))
 		})
-		it('creates file - binary', () => {
+		it('creates binary file', () => {
 			var path = d + '/b1.bin'
 			path.tee('$������,�dN�1��K��G��������W�4�t��НR�Kt���*��Z��2')
 			assert.ok(fs.existsSync(path))
+		})
+		it('creates file from buffer', () => {
+			var path = d + '/f2.txt'
+			var s = 'I am a string'
+			var buf = Buffer.from(s, 'utf-8')
+			if (fs.existsSync(path)) fs.unlinkSync(path)
+			path.tee(buf)
+			assert.ok(fs.existsSync(path))
+			assert.ok(fs.readFileSync(path), s)
+		})
+		it('creates file from buffer - ignores option', () => {
+			var path = d + '/f2.txt'
+			var s = 'I am a string'
+			var buf = Buffer.from(s, 'utf-8')
+			if (fs.existsSync(path)) fs.unlinkSync(path)
+			path.tee(buf, {argIsPath: true})
+			assert.ok(fs.existsSync(path))
+			assert.ok(fs.readFileSync(path), s)
+		})
+		it('creates file in new path', () => {
+			var path = d + '/d1/d3/f1.txt'
+			path.tee('I am a string')
+			assert.ok(fs.existsSync(path))
+		})
+		it('creates file in new path - breaks on option', () => {
+			var path = d + '/d3/d1/f1.txt'
+			try {
+				path.tee('I am a string', {nomkdir: true})
+				assert.ok(false, 'Should have issued exception')
+			}
+			catch(e) {
+				if (e.message == 'Should have issued exception')
+					throw e
+				assert.ok(e.message.match(/no such file or directory/))
+			}
 		})
 		it('reads file', () => {
 			var path = d + '/f1.txt'
@@ -548,6 +586,7 @@ describe('Strings', () => {
 			var actual = d.ls({recurse: true})
 			var expected = [
 				'.f1.txt', 'b1.bin', 'd1','d1/d2','d1/d2/d3',
+				'd1/d3', 'd1/d3/f1.txt',
 				'f1.txt','f2.txt',
 				'sym1','sym2'
 			]
@@ -557,6 +596,7 @@ describe('Strings', () => {
 			var actual = d.ls({recurse: true, fullpath: true})
 			var expected = [
 				'.f1.txt', 'b1.bin', 'd1','d1/d2','d1/d2/d3',
+				'd1/d3', 'd1/d3/f1.txt',
 				'f1.txt','f2.txt',
 				'sym1','sym2'
 			]
@@ -566,8 +606,10 @@ describe('Strings', () => {
 			var actual = d.ls({followSymlinks: true, recurse: true})
 			var expected = [
 				'.f1.txt', 'b1.bin', 'd1','d1/d2','d1/d2/d3',
+				'd1/d3', 'd1/d3/f1.txt',
 				'f1.txt','f2.txt',
-				'sym1','sym2','sym2/d2','sym2/d2/d3'
+				'sym1','sym2','sym2/d2','sym2/d2/d3',
+				'sym2/d3', 'sym2/d3/f1.txt'
 			]
 			assert.deepEqual(actual, expected)
 		})

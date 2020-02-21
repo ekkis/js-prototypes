@@ -221,11 +221,11 @@
   'x.txt'.cat({})           // returns a buffer
   ```
   
-  ### tee [path | text]
+  ### tee [path | text | buffer] [opts]
   
   The `tee` method is used for writing to files but has two modes: 1) where the
   first argument specifies the path, and 2) where the object the method is called
-  on serves as the path  
+  on serves as the path, and the first argument is data
   ```js
   '/tmp/t.txt'.tee('sample text')   // these two calls
   'sample text'.tee('/tmp/t.txt')   // are equivalent
@@ -239,9 +239,15 @@
   // in this case the argument contains no slashes and is incorrectly presumed as data
   'sample text'.tee('t.txt', {argIsPath: true})
   ```
+  If the first argument to the method is a buffer, it is considered data and any option
+  passed to the contrary is ignored.  Additionally, by default the `tee` command appends
+  to files.  To clobber, pass the option `{clobber: true}`
 
-  Additionally, by default the `tee` command appends to files.  To clobber, pass the option
-  `{clobber: true}`
+  Finally, when passed a full path, the function will make the necessary directories as
+  needed, so `'/tmp/a/b/c/t.txt'.tee('I am a string')` will create the directories `a`,
+  `a/b`, and `a/b/c` if these don't exist.  The functionality can be turned off with the
+  `nomkdir: true` option.  With the option turned off, if the necessary path does not
+  exist, the function will simply fail
   
   ### ls [RegEx | object]: array
   
